@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  vault.api:
+    image: vault.api
+    build:
+      context: ./Vault.API
+      dockerfile: Dockerfile
