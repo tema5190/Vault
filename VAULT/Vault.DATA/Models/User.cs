@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using Vault.DATA.Enums;
 
 namespace Vault.DATA.Models
 {
@@ -14,12 +13,13 @@ namespace Vault.DATA.Models
 
         public string Login { get; set; }
 
-        public string Role { get; set; }
+        public UserRoles Role { get; set; }
 
         public string PasswordHash { get; set; }
 
         public string Email { get; set; }
 
+        public bool isActive { get; set; }
         
         public IList<CreditCard> Cards { get; set; }
         public IList<Target> Targets { get; set;}

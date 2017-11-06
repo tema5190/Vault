@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Vault.Services;
+using Vault.DATA;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vault.API
 {
@@ -20,6 +22,9 @@ namespace Vault.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connection = Configuration.GetConnectionString("VaultDataBase");
+            services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -39,6 +44,8 @@ namespace Vault.API
                     };
                 });
 
+           
+            services.AddTransient<AuthService>();
 
             services.AddMvc();
         }
@@ -50,6 +57,8 @@ namespace Vault.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseMvc();
         }

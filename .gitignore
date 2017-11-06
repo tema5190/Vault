@@ -73,6 +73,7 @@ _[Ss]cripts
 *.nupkg
 *.ncrunchsolution
 *.dot[Cc]over
-# My custom
 
+# My custom
 *.ide
+.vs/

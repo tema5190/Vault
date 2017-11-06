@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vault.API", "Vault.API\Vault.API.csproj", "{EB5DB604-3DE0-4F86-B463-95B8F73A9CF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vault.API", "Vault.API\Vault.API.csproj", "{EB5DB604-3DE0-4F86-B463-95B8F73A9CF6}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{82335003-D189-4385-B69B-66CF45B330D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vault.DATA", "Vault.DATA\Vault.DATA.csproj", "{5B0BDDAC-4BEB-4927-BDF4-F8D8AC747AB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vault.DATA", "Vault.DATA\Vault.DATA.csproj", "{5B0BDDAC-4BEB-4927-BDF4-F8D8AC747AB8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vault.Services", "Vault.Services\Vault.Services.csproj", "{DE01214C-D23C-4B08-A59A-1E3D04E8F3FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vault.Services", "Vault.Services\Vault.Services.csproj", "{DE01214C-D23C-4B08-A59A-1E3D04E8F3FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		{EB5DB604-3DE0-4F86-B463-95B8F73A9CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB5DB604-3DE0-4F86-B463-95B8F73A9CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB5DB604-3DE0-4F86-B463-95B8F73A9CF6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82335003-D189-4385-B69B-66CF45B330D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82335003-D189-4385-B69B-66CF45B330D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82335003-D189-4385-B69B-66CF45B330D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82335003-D189-4385-B69B-66CF45B330D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5B0BDDAC-4BEB-4927-BDF4-F8D8AC747AB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B0BDDAC-4BEB-4927-BDF4-F8D8AC747AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B0BDDAC-4BEB-4927-BDF4-F8D8AC747AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU

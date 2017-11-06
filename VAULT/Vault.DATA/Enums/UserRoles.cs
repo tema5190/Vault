@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Vault.DATA.Enums
 {
-    public enum TargetType
+    public enum UserRoles
     {
-        Short,
-        Middle,
-        Long,
+        Manager = -1,
+        Client = 1,
     }
 }
