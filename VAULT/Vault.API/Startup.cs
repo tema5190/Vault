@@ -7,23 +7,26 @@ using Microsoft.Extensions.Configuration;
 using Vault.Services;
 using Vault.DATA;
 using Microsoft.EntityFrameworkCore;
+using Vault.DATA.DTOs.Email;
 
 namespace Vault.API
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("VaultDataBase");
             services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
+
+
+            services.Configure<EmailSMTPConfiguration>(Configuration);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

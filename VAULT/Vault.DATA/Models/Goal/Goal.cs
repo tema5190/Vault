@@ -5,7 +5,7 @@ using Vault.DATA.Enums;
 
 namespace Vault.DATA.Models
 {
-    public class Target
+    public class Goal
     {
         [Key]
         public int Id { get; set; }
@@ -14,7 +14,8 @@ namespace Vault.DATA.Models
         public string Description { get; set; }
         public TargetType TargetType { get; set; }     
 
-        public decimal? MoneyGoal { get; set; }
+        public decimal MoneyTarget { get; set; }
+        public decimal MoneyCurrent { get; set; }
 
 
         public DateTime TargetStart { get; set; }

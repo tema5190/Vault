@@ -15,7 +15,7 @@ namespace Vault.DATA
 
         public string CardNumber { get; set; }
 
-        public string Owner { get; set; }
+        public User Owner { get; set; }
 
         public CartType CardType { get; set; }
 

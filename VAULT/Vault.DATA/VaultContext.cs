@@ -10,6 +10,6 @@ namespace Vault.DATA
         public DbSet<User> Users { get; set; }
         public DbSet<CreditCard> Cards { get; set; }
         public DbSet<RefillTransaction> Transactions { get; set; }
-        public DbSet<Target> Targets { get; set; }
+        public DbSet<Goal> Targets { get; set; }
     }
 }

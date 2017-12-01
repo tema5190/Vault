@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using Vault.API.Infrastructure.JWT;
+using Vault.DATA.DTOs;
 
 namespace Vault.API.Controllers
 {
@@ -38,5 +39,12 @@ namespace Vault.API.Controllers
             Response.ContentType = "application/json";
             await Response.WriteAsync(JsonConvert.SerializeObject(token, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
+
+        //[HttpPost]
+        //[AllowAnonymous]
+        //public async Task<bool> Register([FromBody] RegisterData registerData)
+        //{
+        //    return await this._authService.Register(registerData);           
+        //}
     }
 }

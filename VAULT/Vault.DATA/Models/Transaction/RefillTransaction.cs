@@ -13,7 +13,7 @@ namespace Vault.DATA.Models
         public CreditCard CreditCard { get; set; }
 
         public int? TargetId { get; set; }
-        public Target Target { get; set; }
+        public Goal Target { get; set; }
 
     }
 }
