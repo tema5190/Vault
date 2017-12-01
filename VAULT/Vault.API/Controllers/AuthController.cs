@@ -6,6 +6,12 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using Vault.API.Infrastructure.JWT;
 using Vault.DATA.DTOs;
+using Vault.DATA.Models;
+using System.Security.Claims;
+using System.Collections.Generic;
+using System;
+using Vault.DATA.Enums;
+using Vault.DATA.DTOs.Auth;
 
 namespace Vault.API.Controllers
 {
@@ -26,9 +32,18 @@ namespace Vault.API.Controllers
             var login = (string)loginData.login;
             var password = (string)loginData.password;
 
-            var identity = await _authService.Login(login, password);
+            var user = await _authService.Login(login, password);
 
-            if(identity == null)
+            Response.ContentType = "application/json";
+
+            if (!user.IsRegistrationFinished) { 
+                await Response.WriteAsync(JsonConvert.SerializeObject(new AuthResponse() { isRegistrationFinished = false }));
+                return;
+            }
+
+            var identity = GetIdentity(user);
+
+            if (identity == null)
             {
                 Response.StatusCode = 400;
                 await Response.WriteAsync("Invalid username or password.");
@@ -36,8 +51,23 @@ namespace Vault.API.Controllers
             }
 
             var token = JwtHelper.CreateToken(identity);
-            Response.ContentType = "application/json";
             await Response.WriteAsync(JsonConvert.SerializeObject(token, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+        }
+
+        private ClaimsIdentity GetIdentity(VaultUser user)
+        {
+            if (user == null) return null;
+
+            var claims = new List<Claim>
+            {
+            new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
+            new Claim(ClaimsIdentity.DefaultRoleClaimType, Enum.GetName(typeof(UserRoles), user.Role))
+            };
+
+            ClaimsIdentity claimsIdentity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+            ClaimsIdentity.DefaultRoleClaimType);
+            return claimsIdentity;
         }
 
         //[HttpPost]

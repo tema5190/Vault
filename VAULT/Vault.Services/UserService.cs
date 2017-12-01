@@ -22,7 +22,7 @@ namespace Vault.Services
             return await this.GetUserByLogin(login) == null ? false : true;
         }
 
-        public async Task<User> GetUserByLogin(string login)
+        public async Task<VaultUser> GetUserByLogin(string login)
         {
             var existUser = await this._context.Users.FirstOrDefaultAsync(u => u.UserName == login);
 

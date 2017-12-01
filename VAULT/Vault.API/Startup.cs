@@ -49,6 +49,9 @@ namespace Vault.API
 
            
             services.AddTransient<AuthService>();
+            services.AddTransient<UserService>();
+            services.AddTransient<CreditCardService>();
+            services.AddTransient<EmailService>();
 
             services.AddMvc();
         }

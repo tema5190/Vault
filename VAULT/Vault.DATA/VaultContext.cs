@@ -7,7 +7,7 @@ namespace Vault.DATA
     {
         public VaultContext(DbContextOptions<VaultContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<VaultUser> Users { get; set; }
         public DbSet<CreditCard> Cards { get; set; }
         public DbSet<RefillTransaction> Transactions { get; set; }
         public DbSet<Goal> Targets { get; set; }
