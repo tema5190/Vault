@@ -1,0 +1,1 @@
+git clone https://github.com/tema5190/Vault.git || dotnet build \Vault\VAULT\Vault.API
