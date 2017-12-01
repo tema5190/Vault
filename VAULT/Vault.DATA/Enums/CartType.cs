@@ -4,5 +4,6 @@
     {
         Visa,
         MasterCard,
+        BelCard,
     }
 }
