@@ -2,12 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Vault.DATA;
-using Vault.DATA.DTOs;
-using Vault.DATA.DTOs.Auth;
 using Vault.DATA.Enums;
 using Vault.DATA.Models;
 
