@@ -1,6 +1,6 @@
 ﻿namespace Vault.DATA.Enums
 {
-    public enum CartType
+    public enum CardType
     {
         Visa,
         MasterCard,

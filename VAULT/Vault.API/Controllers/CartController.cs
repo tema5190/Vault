@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Vault.DATA;
 using Vault.Services;
+using Vault.DATA.DTOs.Cards;
 
 namespace Vault.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Cart")]
+    [Route("cart")]
     public class CartController : Controller
     {
-
         private readonly CreditCardService _creditCardService;
 
         public CartController(CreditCardService creditCardService)
@@ -21,15 +21,18 @@ namespace Vault.API.Controllers
             this._creditCardService = creditCardService;
         }
 
+        [HttpGet("/cards")]
         public async Task<IList<CreditCard>> GetUserCards()
         {
-            var user = User.Identity.Name;
-            return await _creditCardService.GetUserCards(user);
+            var userName = User.Identity.Name;
+            return await _creditCardService.GetUserCards(userName);
         }
 
-        public async Task<bool> AddUserCard(int userId, CreditCard newCard)
+        [HttpPost("/cards/add")]
+        public async Task<bool> AddUserCard([FromBody] CreditCardDto newCard)
         {
-            return await _creditCardService.AddUserCard(userId, newCard);
+            var userName = User.Identity.Name;
+            return await _creditCardService.AddUserCard(userName, newCard);
         }
 
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Vault.DATA;
+using Vault.DATA.DTOs.Cards;
 using Vault.DATA.Models;
 
 namespace Vault.Services
@@ -28,9 +29,23 @@ namespace Vault.Services
             return user.ClientInfo.Cards;
         }
 
-        public async Task<bool> AddUserCard(int userId, CreditCard newCard)
+        public async Task<bool> AddUserCard(string userName, CreditCardDto newCardDto)
         {
-            var user = await _db.Users.Include(u => u.ClientInfo.Cards).SingleAsync(u => u.Id == userId);
+            var user = await _db.Users.Include(u => u.ClientInfo.Cards).SingleAsync(u => u.UserName == userName);
+
+            var newCard = new CreditCard()
+            {
+                CardBalance = 0m,
+                CardNumber = newCardDto.CardNumber,
+                CardType = newCardDto.CardType,
+                CVV = newCardDto.CVV,
+                IsPaused = false,
+                OwnerFullName = newCardDto.OwnerFullName,
+                CustomCardName = newCardDto.CustomCardName,
+                Owner = user,
+                RefillDate = newCardDto.RefillDate,
+            };
+
 
             user.ClientInfo.Cards.Add(newCard);
             await _db.SaveChangesAsync();

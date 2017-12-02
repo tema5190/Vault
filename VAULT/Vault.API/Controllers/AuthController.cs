@@ -37,7 +37,7 @@ namespace Vault.API.Controllers
 
             var user = _authService.Login(login, password);
 
-            if(user == null)
+            if (user == null)
             {
                 return result;
             }
@@ -55,7 +55,6 @@ namespace Vault.API.Controllers
                 return result;
             }
 
-            //var token = 
             result.IsError = false;
             result.Token = JwtHelper.CreateToken(identity);
             return result;

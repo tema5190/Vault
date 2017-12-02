@@ -51,8 +51,8 @@ namespace Vault.DATA
                      {
                          new CreditCard()
                          {
-                           CardType = CartType.Visa,
-                           Name = "My salary credit card",
+                           CardType = CardType.Visa,
+                           CustomCardName = "My salary credit card",
                            RefillDate = new DateTime(2019, 2, 5),
                            CardNumber = "8800555353511111",
                          }
