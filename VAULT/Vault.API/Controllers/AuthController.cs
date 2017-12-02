@@ -16,6 +16,7 @@ using Vault.DATA.DTOs.Registration;
 
 namespace Vault.API.Controllers
 {
+    [Produces("application/json")]
     [Route("auth")]
     public class AuthController : Controller
     {

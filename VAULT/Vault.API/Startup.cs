@@ -9,6 +9,7 @@ using Vault.DATA;
 using Microsoft.EntityFrameworkCore;
 using Vault.DATA.DTOs.Email;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Vault.API
 {

@@ -17,7 +17,7 @@ namespace Vault.DATA
 
         public string CardNumber { get; set; }
 
-        public DateTime RefillDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
 
         public CardType CardType { get; set; }
 

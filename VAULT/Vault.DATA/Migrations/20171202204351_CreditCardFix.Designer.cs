@@ -12,8 +12,8 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171202193353_RefactorCard")]
-    partial class RefactorCard
+    [Migration("20171202204351_CreditCardFix")]
+    partial class CreditCardFix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,13 +39,13 @@ namespace Vault.DATA.Migrations
 
                     b.Property<string>("CustomCardName");
 
+                    b.Property<DateTime>("ExpirationDate");
+
                     b.Property<bool>("IsPaused");
 
                     b.Property<string>("OwnerFullName");
 
                     b.Property<int?>("OwnerId");
-
-                    b.Property<DateTime>("RefillDate");
 
                     b.HasKey("Id");
 

@@ -30,38 +30,13 @@ namespace Vault.DATA.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CodeSendedDateTime = table.Column<DateTime>(nullable: false),
                     EmailKey = table.Column<string>(nullable: true),
+                    NewPassword = table.Column<string>(nullable: true),
                     TargetEmail = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Registrations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Targets",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClientInfoId = table.Column<int>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    MoneyCurrent = table.Column<decimal>(nullable: false),
-                    MoneyTarget = table.Column<decimal>(nullable: false),
-                    TargetEnd = table.Column<DateTime>(nullable: false),
-                    TargetStart = table.Column<DateTime>(nullable: false),
-                    TargetType = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Targets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Targets_ClientInfo_ClientInfoId",
-                        column: x => x.ClientInfoId,
-                        principalTable: "ClientInfo",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,10 +68,14 @@ namespace Vault.DATA.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CVV = table.Column<string>(nullable: true),
+                    CardBalance = table.Column<decimal>(nullable: false),
                     CardNumber = table.Column<string>(nullable: true),
                     CardType = table.Column<int>(nullable: false),
                     ClientInfoId = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
+                    CustomCardName = table.Column<string>(nullable: true),
+                    IsPaused = table.Column<bool>(nullable: false),
+                    OwnerFullName = table.Column<string>(nullable: true),
                     OwnerId = table.Column<int>(nullable: true),
                     RefillDate = table.Column<DateTime>(nullable: false)
                 },
@@ -118,6 +97,40 @@ namespace Vault.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Targets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ClientInfoId = table.Column<int>(nullable: true),
+                    CreditCardId = table.Column<int>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    IsPaused = table.Column<bool>(nullable: false),
+                    MoneyCurrent = table.Column<decimal>(nullable: false),
+                    MoneyTarget = table.Column<decimal>(nullable: false),
+                    TargetEnd = table.Column<DateTime>(nullable: false),
+                    TargetStart = table.Column<DateTime>(nullable: false),
+                    TargetType = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Targets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Targets_ClientInfo_ClientInfoId",
+                        column: x => x.ClientInfoId,
+                        principalTable: "ClientInfo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Targets_Cards_CreditCardId",
+                        column: x => x.CreditCardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -127,7 +140,8 @@ namespace Vault.DATA.Migrations
                     ClientInfoId = table.Column<int>(nullable: true),
                     CreditCardId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    TargetId = table.Column<int>(nullable: true)
+                    GoalId = table.Column<int>(nullable: true),
+                    IsPausedError = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -145,8 +159,8 @@ namespace Vault.DATA.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Transactions_Targets_TargetId",
-                        column: x => x.TargetId,
+                        name: "FK_Transactions_Targets_GoalId",
+                        column: x => x.GoalId,
                         principalTable: "Targets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -168,6 +182,11 @@ namespace Vault.DATA.Migrations
                 column: "ClientInfoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Targets_CreditCardId",
+                table: "Targets",
+                column: "CreditCardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_ClientInfoId",
                 table: "Transactions",
                 column: "ClientInfoId");
@@ -178,9 +197,9 @@ namespace Vault.DATA.Migrations
                 column: "CreditCardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_TargetId",
+                name: "IX_Transactions_GoalId",
                 table: "Transactions",
-                column: "TargetId");
+                column: "GoalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ClientInfoId",
@@ -197,10 +216,10 @@ namespace Vault.DATA.Migrations
                 name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "Cards");
+                name: "Targets");
 
             migrationBuilder.DropTable(
-                name: "Targets");
+                name: "Cards");
 
             migrationBuilder.DropTable(
                 name: "Users");

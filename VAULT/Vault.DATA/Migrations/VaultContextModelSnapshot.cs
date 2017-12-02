@@ -38,13 +38,13 @@ namespace Vault.DATA.Migrations
 
                     b.Property<string>("CustomCardName");
 
+                    b.Property<DateTime>("ExpirationDate");
+
                     b.Property<bool>("IsPaused");
 
                     b.Property<string>("OwnerFullName");
 
                     b.Property<int?>("OwnerId");
-
-                    b.Property<DateTime>("RefillDate");
 
                     b.HasKey("Id");
 

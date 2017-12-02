@@ -16,5 +16,12 @@ namespace Vault.DATA.Models
         public IList<CreditCard> Cards { get; set; }
         public IList<Goal> Goals { get; set; }
         public IList<RefillTransaction> Transactions { get; set; }
+
+        public ClientInfo()
+        {
+            Cards = new List<CreditCard>();
+            Goals = new List<Goal>();
+            Transactions = new List<RefillTransaction>();
+        }
     }
 }

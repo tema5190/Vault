@@ -21,13 +21,14 @@ namespace Vault.Services
             this._db = vaultContext;
         }
 
-        public async Task<IList<CreditCard>> GetUserCards(string userName)
+        public async Task<IList<CreditCardDto>> GetUserCards(string userName)
         {
             var user = await _db.Users
                 .Include(u => u.ClientInfo.Cards)
+                .AsNoTracking()
                 .SingleAsync(u => u.UserName == userName);
 
-            return user.ClientInfo.Cards;
+            return user.ClientInfo.Cards.Select(c => new CreditCardDto(c)).ToList();
         }
 
         public async Task<CreditCardDto> GetCreditCardById(string userName, int id)
@@ -57,7 +58,7 @@ namespace Vault.Services
                 OwnerFullName = newCardDto.OwnerFullName,
                 CustomCardName = newCardDto.CustomCardName,
                 Owner = user,
-                RefillDate = newCardDto.RefillDate,
+                ExpirationDate = newCardDto.ExpirationDate,
             };
 
             user.ClientInfo.Cards.Add(newCard);

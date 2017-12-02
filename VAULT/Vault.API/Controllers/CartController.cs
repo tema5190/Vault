@@ -22,9 +22,11 @@ namespace Vault.API.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IList<CreditCard>> GetUserCards()
+        public async Task<IList<CreditCardDto>> GetUserCards()
         {
             var userName = User.Identity.Name;
+            if (userName == null)
+                return null;
             return await _creditCardService.GetUserCards(userName);
         }
 

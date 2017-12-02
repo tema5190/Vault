@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,8 @@ namespace Vault.DATA
 
         public VaultContextInitializer(VaultContext context)
         {
-            this._db = context;
+            if((context.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists())
+                this._db = context;
         }
 
         public void Seed()
@@ -34,9 +37,9 @@ namespace Vault.DATA
             _db.Users.AddRange(new List<VaultUser>(){
                 new VaultUser()
                 {
-                    UserName = "test",
+                    UserName = "test1",
                     IsRegistrationFinished = false,
-                    Password = "test",
+                    Password = "test1",
                     Role = UserRoles.Client,
                 },
                 new VaultUser()
@@ -53,11 +56,11 @@ namespace Vault.DATA
                          {
                            CardType = CardType.Visa,
                            CustomCardName = "My salary credit card",
-                           RefillDate = new DateTime(2019, 2, 5),
+                           ExpirationDate = new DateTime(2019, 2, 5),
                            CardNumber = "8800555353511111",
                          }
                      },
-                     Email = "tema5190@gmail.com",
+                     Email = "test@test",
                      Goals = new List<Goal>()
                      {
                          new Goal()

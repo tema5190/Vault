@@ -12,8 +12,8 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171202175645_AddNewPasswordToRegistration")]
-    partial class AddNewPasswordToRegistration
+    [Migration("20171202203455_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,13 +27,21 @@ namespace Vault.DATA.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("CVV");
+
+                    b.Property<decimal>("CardBalance");
+
                     b.Property<string>("CardNumber");
 
                     b.Property<int>("CardType");
 
                     b.Property<int?>("ClientInfoId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("CustomCardName");
+
+                    b.Property<bool>("IsPaused");
+
+                    b.Property<string>("OwnerFullName");
 
                     b.Property<int?>("OwnerId");
 
@@ -67,7 +75,11 @@ namespace Vault.DATA.Migrations
 
                     b.Property<int?>("ClientInfoId");
 
+                    b.Property<int?>("CreditCardId");
+
                     b.Property<string>("Description");
+
+                    b.Property<bool>("IsPaused");
 
                     b.Property<decimal>("MoneyCurrent");
 
@@ -85,6 +97,8 @@ namespace Vault.DATA.Migrations
 
                     b.HasIndex("ClientInfoId");
 
+                    b.HasIndex("CreditCardId");
+
                     b.ToTable("Targets");
                 });
 
@@ -101,7 +115,9 @@ namespace Vault.DATA.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int?>("TargetId");
+                    b.Property<int?>("GoalId");
+
+                    b.Property<bool>("IsPausedError");
 
                     b.HasKey("Id");
 
@@ -109,7 +125,7 @@ namespace Vault.DATA.Migrations
 
                     b.HasIndex("CreditCardId");
 
-                    b.HasIndex("TargetId");
+                    b.HasIndex("GoalId");
 
                     b.ToTable("Transactions");
                 });
@@ -172,6 +188,10 @@ namespace Vault.DATA.Migrations
                     b.HasOne("Vault.DATA.Models.ClientInfo")
                         .WithMany("Goals")
                         .HasForeignKey("ClientInfoId");
+
+                    b.HasOne("Vault.DATA.CreditCard", "CreditCard")
+                        .WithMany("Goals")
+                        .HasForeignKey("CreditCardId");
                 });
 
             modelBuilder.Entity("Vault.DATA.Models.RefillTransaction", b =>
@@ -184,9 +204,9 @@ namespace Vault.DATA.Migrations
                         .WithMany("Transactions")
                         .HasForeignKey("CreditCardId");
 
-                    b.HasOne("Vault.DATA.Models.Goal", "Target")
+                    b.HasOne("Vault.DATA.Models.Goal", "Goal")
                         .WithMany("Transactions")
-                        .HasForeignKey("TargetId");
+                        .HasForeignKey("GoalId");
                 });
 
             modelBuilder.Entity("Vault.DATA.Models.VaultUser", b =>
