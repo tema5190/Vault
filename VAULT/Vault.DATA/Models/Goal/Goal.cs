@@ -17,6 +17,7 @@ namespace Vault.DATA.Models
         public decimal MoneyTarget { get; set; }
         public decimal MoneyCurrent { get; set; }
 
+        public bool IsPaused { get; set; }
 
         public DateTime TargetStart { get; set; }
         public DateTime TargetEnd { get; set; }

@@ -15,13 +15,17 @@ namespace Vault.DATA
 
         public string CardNumber { get; set; }
 
-        public VaultUser Owner { get; set; }
+        public DateTime RefillDate { get; set; }
 
         public CartType CardType { get; set; }
 
-        public DateTime RefillDate { get; set; }
+        public string CVV { get; set; }
 
+        public decimal CardBalance { get; set; }
+
+        public bool IsPaused { get; set; }
         //
+        public VaultUser Owner { get; set; }
         public IList<RefillTransaction> Transactions { get; set; }
     }
 }
