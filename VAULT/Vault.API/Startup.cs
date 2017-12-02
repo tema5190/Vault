@@ -64,7 +64,7 @@ namespace Vault.API
         {
             if (env.IsDevelopment())
             {
-                contextInitializer.Seed();
+                //contextInitializer.Seed();
                 app.UseDeveloperExceptionPage();
             }
 

@@ -16,6 +16,11 @@ namespace Vault.DATA.DTOs.Cards
         public DateTime ExpirationDate { get; set; }
         public string CVV { get; set; }
 
+        public CreditCardDto()
+        {
+
+        }
+
         public CreditCardDto(CreditCard card)
         {
             CreditCardId = card.Id;
