@@ -12,7 +12,7 @@ namespace Vault.DATA.DTOs.Registration
         {
             get
             {
-                return !IsEmailExist || !UserNameNotFound;
+                return !IsEmailExist && !UserNameNotFound;
             }
         }
     }
