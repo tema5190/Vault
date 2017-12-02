@@ -28,38 +28,37 @@ namespace Vault.API.Controllers
 
         [HttpPost("")]
         [AllowAnonymous]
-        public async Task Login([FromBody] dynamic loginData)
+        public LoginResponse Login([FromBody] dynamic loginData)
         {
+            Response.ContentType = "application/json";
+            var result = new LoginResponse() { IsError = true };
             var login = (string)loginData.login;
             var password = (string)loginData.password;
 
             var user = _authService.Login(login, password);
 
-            Response.ContentType = "application/json";
-
             if(user == null)
             {
-                Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid username or password.");
-                return;
+                return result;
             }
 
-            if (!user.IsRegistrationFinished) { 
-                await Response.WriteAsync(JsonConvert.SerializeObject(new AuthResponse() { isRegistrationFinished = false }, new JsonSerializerSettings { Formatting = Formatting.Indented }));
-                return;
+            if (!user.IsRegistrationFinished) {
+                result.IsRegistrationNotFinished = true;
+                result.IsError = false;
+                return result;
             }
 
             var identity = GetIdentity(user);
 
             if (identity == null)
             {
-                Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid username or password.");
-                return;
+                return result;
             }
 
-            var token = JwtHelper.CreateToken(identity);
-            await Response.WriteAsync(JsonConvert.SerializeObject(token, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+            //var token = 
+            result.IsError = false;
+            result.Token = JwtHelper.CreateToken(identity);
+            return result;
         }
 
         [HttpPost("register/step-one")]

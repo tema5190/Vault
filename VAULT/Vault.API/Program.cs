@@ -14,10 +14,9 @@ namespace Vault.API
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseKestrel()
+                .UseIISIntegration()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(new ConfigurationBuilder().AddCommandLine(args).Build())
-                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
     }

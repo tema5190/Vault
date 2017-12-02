@@ -20,18 +20,18 @@ namespace Vault.API
             Configuration = configuration;
         }
 
-        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
-            string connection;
+            string connection = Configuration.GetConnectionString("VaultDataBase");
 
-            if (env.IsDevelopment())
-            {
-                connection = Configuration.GetConnectionString("VaultDataBase");
-            }
-            else
-            {
-                connection = Configuration.GetConnectionString("HostingDataBase");
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    connection = 
+            //}
+            //else
+            //{
+            //    connection = Configuration.GetConnectionString("HostingDataBase");
+            //}
 
             services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
 
