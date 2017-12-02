@@ -23,5 +23,8 @@ namespace Vault.DATA.Models
         public DateTime TargetEnd { get; set; }
 
         public IList<RefillTransaction> Transactions { get; set; }
+
+        public int? CreditCardId { get; set; }
+        public CreditCard CreditCard { get; set; }
     }
 }

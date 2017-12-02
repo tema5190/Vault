@@ -29,5 +29,6 @@ namespace Vault.DATA
         //
         public VaultUser Owner { get; set; }
         public IList<RefillTransaction> Transactions { get; set; }
+        public IList<Goal> Goals { get; set; }
     }
 }

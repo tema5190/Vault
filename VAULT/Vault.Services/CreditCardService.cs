@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vault.DATA;
@@ -29,6 +30,19 @@ namespace Vault.Services
             return user.ClientInfo.Cards;
         }
 
+        public async Task<CreditCardDto> GetCreditCardById(string userName, int id)
+        {
+            var user = await _db.Users.Include(u => u.ClientInfo.Cards).FirstOrDefaultAsync(u => u.UserName == userName);
+
+            if (user == null) return null;
+
+            var card = user.ClientInfo.Cards.FirstOrDefault(c => c.Id == id);
+
+            if (card == null) return null;
+
+            return new CreditCardDto(card);
+        }
+
         public async Task<bool> AddUserCard(string userName, CreditCardDto newCardDto)
         {
             var user = await _db.Users.Include(u => u.ClientInfo.Cards).SingleAsync(u => u.UserName == userName);
@@ -46,9 +60,37 @@ namespace Vault.Services
                 RefillDate = newCardDto.RefillDate,
             };
 
-
             user.ClientInfo.Cards.Add(newCard);
             await _db.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteUserCard(string userName, CreditCardDto cardToDelete)
+        {
+            var user = await _db.Users.Include(u => u.ClientInfo.Cards)
+                                        .Include(u => u.ClientInfo.Goals)
+                                        .FirstOrDefaultAsync(u => u.UserName == userName);
+
+            var card = user.ClientInfo.Cards.SingleOrDefault(c => c.Id == cardToDelete.CreditCardId);
+
+            if (card == null)
+            {
+                return false;
+            }
+            card.Goals.All(g => DeleteCardAndPauseGoal(g));
+            user.ClientInfo.Cards.Remove(card);
+
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+
+        private bool DeleteCardAndPauseGoal(Goal goal)
+        {
+            goal.IsPaused = true;
+            goal.CreditCard = null;
+            goal.CreditCardId = null;
 
             return true;
         }

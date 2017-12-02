@@ -7,13 +7,13 @@ namespace Vault.DATA.Models
         [Key]
         public int Id { get; set; }
         public string Description { get; set; }
+        public bool IsPausedError { get; set; }
 
         // Navigation property
         public int CardId { get; set; }
         public CreditCard CreditCard { get; set; }
-        public bool IsPausedError { get; set; }
 
-        public int? TargetId { get; set; }
-        public Goal Target { get; set; }
+        public int? GoalId { get; set; }
+        public Goal Goal { get; set; }
     }
 }
