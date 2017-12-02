@@ -20,10 +20,22 @@ namespace Vault.API
             Configuration = configuration;
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
         {
-            string connection = Configuration.GetConnectionString("VaultDataBase");
+            string connection;
+
+            if (env.IsDevelopment())
+            {
+                connection = Configuration.GetConnectionString("VaultDataBase");
+            }
+            else
+            {
+                connection = Configuration.GetConnectionString("HostingDataBase");
+            }
+
             services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
+
+            
 
             services.AddOptions();
             services.Configure<EmailSMTPConfiguration>(Configuration.GetSection("EmailSMTPConfiguration"));
