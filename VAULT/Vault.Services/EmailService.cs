@@ -20,7 +20,21 @@ namespace Vault.Services
             _smptpOptions = options.Value;
         }
 
-        public void SendEmailVerification(string email, string key, DateTime sendDate)
+        public void SendEmailVerification(string email, string key)
+        {
+            var emailContent = GetEmailTemplateContent(key);
+            emailContent = AddConfirmRegistrationContent(emailContent); 
+            SendEmail(email, emailContent, "Email verification");
+        }
+
+        public void SendLoginVerification(string email, string key)
+        {
+            var emailContent = GetEmailTemplateContent(key);
+            emailContent = AddConfirmLogInContent(emailContent);
+            SendEmail(email, emailContent, "Login verification");
+        }
+
+        private string GetEmailTemplateContent(string key = null)
         {
             FileStream fileStream = new FileStream($@"{Directory.GetCurrentDirectory()}\wwwroot\FirstStepRegistration.html", FileMode.Open);
             var sb = new StringBuilder();
@@ -31,15 +45,17 @@ namespace Vault.Services
                     sb.Append(sr.ReadLine());
                 }
             }
-            var emailContent = sb.ToString();
-            emailContent = emailContent.Replace("*CODE*", key);
-            emailContent = emailContent.Replace("*Month Year*", sendDate.ToLongDateString());
-            emailContent = AddCongirmRegistrationContent(emailContent); 
+            var result = sb.ToString();
 
-            SendEmail(email, emailContent, "Email verification");
+            if (key != null)
+            {
+                result = result.Replace("*CODE*", key);
+            }
+            result = result.Replace("*Month Year*", DateTime.Now.ToLongDateString());
+            return result;
         }
 
-        private string AddCongirmRegistrationContent(string message)
+        private string AddConfirmRegistrationContent(string message)
         {
             return message.Replace("*REGISTRATIONTEXT*", "This email is to confirm your recent registration.");
         }

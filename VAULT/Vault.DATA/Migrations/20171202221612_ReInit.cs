@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Vault.DATA.Migrations
 {
-    public partial class Init : Migration
+    public partial class ReInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,23 +20,6 @@ namespace Vault.DATA.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ClientInfo", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Registrations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CodeSendedDateTime = table.Column<DateTime>(nullable: false),
-                    EmailKey = table.Column<string>(nullable: true),
-                    NewPassword = table.Column<string>(nullable: true),
-                    TargetEmail = table.Column<string>(nullable: true),
-                    UserName = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Registrations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,10 +57,10 @@ namespace Vault.DATA.Migrations
                     CardType = table.Column<int>(nullable: false),
                     ClientInfoId = table.Column<int>(nullable: true),
                     CustomCardName = table.Column<string>(nullable: true),
+                    ExpirationDate = table.Column<DateTime>(nullable: false),
                     IsPaused = table.Column<bool>(nullable: false),
                     OwnerFullName = table.Column<string>(nullable: true),
-                    OwnerId = table.Column<int>(nullable: true),
-                    RefillDate = table.Column<DateTime>(nullable: false)
+                    OwnerId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,6 +77,31 @@ namespace Vault.DATA.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailAuthModels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CodeSendedDateTime = table.Column<DateTime>(nullable: false),
+                    EmailKey = table.Column<string>(nullable: true),
+                    NewPassword = table.Column<string>(nullable: true),
+                    Reason = table.Column<int>(nullable: false),
+                    TargetEmail = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
+                    UserName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailAuthModels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmailAuthModels_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -136,10 +144,9 @@ namespace Vault.DATA.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CardId = table.Column<int>(nullable: false),
+                    CardId = table.Column<int>(nullable: true),
                     ClientInfoId = table.Column<int>(nullable: true),
                     CreditCardId = table.Column<int>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
                     GoalId = table.Column<int>(nullable: true),
                     IsPausedError = table.Column<bool>(nullable: false)
                 },
@@ -177,6 +184,11 @@ namespace Vault.DATA.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmailAuthModels_UserId",
+                table: "EmailAuthModels",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Targets_ClientInfoId",
                 table: "Targets",
                 column: "ClientInfoId");
@@ -210,7 +222,7 @@ namespace Vault.DATA.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Registrations");
+                name: "EmailAuthModels");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

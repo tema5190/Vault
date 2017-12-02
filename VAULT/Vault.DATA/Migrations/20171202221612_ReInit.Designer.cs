@@ -12,8 +12,8 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171202204351_CreditCardFix")]
-    partial class CreditCardFix
+    [Migration("20171202221612_ReInit")]
+    partial class ReInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,13 +107,11 @@ namespace Vault.DATA.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CardId");
+                    b.Property<int?>("CardId");
 
                     b.Property<int?>("ClientInfoId");
 
                     b.Property<int?>("CreditCardId");
-
-                    b.Property<string>("Description");
 
                     b.Property<int?>("GoalId");
 
@@ -130,7 +128,7 @@ namespace Vault.DATA.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Vault.DATA.Models.Users.Registration", b =>
+            modelBuilder.Entity("Vault.DATA.Models.Users.EmailAuthModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -141,13 +139,19 @@ namespace Vault.DATA.Migrations
 
                     b.Property<string>("NewPassword");
 
+                    b.Property<int>("Reason");
+
                     b.Property<string>("TargetEmail");
+
+                    b.Property<int>("UserId");
 
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Registrations");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmailAuthModels");
                 });
 
             modelBuilder.Entity("Vault.DATA.Models.VaultUser", b =>
@@ -205,8 +209,16 @@ namespace Vault.DATA.Migrations
                         .HasForeignKey("CreditCardId");
 
                     b.HasOne("Vault.DATA.Models.Goal", "Goal")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("GoalId");
+                });
+
+            modelBuilder.Entity("Vault.DATA.Models.Users.EmailAuthModel", b =>
+                {
+                    b.HasOne("Vault.DATA.Models.VaultUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Vault.DATA.Models.VaultUser", b =>

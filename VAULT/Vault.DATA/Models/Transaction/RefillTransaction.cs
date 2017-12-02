@@ -6,11 +6,11 @@ namespace Vault.DATA.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Description { get; set; }
+
         public bool IsPausedError { get; set; }
 
         // Navigation property
-        public int CardId { get; set; }
+        public int? CardId { get; set; }
         public CreditCard CreditCard { get; set; }
 
         public int? GoalId { get; set; }

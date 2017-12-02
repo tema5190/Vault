@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using Vault.DATA.DTOs.Auth;
+using Vault.DATA.Enums;
 
 namespace Vault.DATA.Models.Users
 {
-    public class Registration
+    public class EmailAuthModel
     {
         public int Id { get; set; }
+
+        public EmailAuthReason Reason { get; set; }
 
         public string UserName { get; set; }
 
@@ -18,5 +21,9 @@ namespace Vault.DATA.Models.Users
         public string TargetEmail { get; set; }
 
         public string EmailKey { get; set; }
+
+        // FK to VaultUser
+        public VaultUser User { get; set; }
+        public int UserId { get; set; }
     }
 }

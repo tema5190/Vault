@@ -12,17 +12,15 @@ namespace Vault.DATA.Models
 
         public string Title { get; set; }
         public string Description { get; set; }
-        public TargetType TargetType { get; set; }     
 
         public decimal MoneyTarget { get; set; }
         public decimal MoneyCurrent { get; set; }
 
         public bool IsPaused { get; set; }
 
+        public TargetType TargetType { get; set; }
         public DateTime TargetStart { get; set; }
         public DateTime TargetEnd { get; set; }
-
-        public IList<RefillTransaction> Transactions { get; set; }
 
         public int? CreditCardId { get; set; }
         public CreditCard CreditCard { get; set; }

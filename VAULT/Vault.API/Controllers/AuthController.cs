@@ -31,7 +31,6 @@ namespace Vault.API.Controllers
         [AllowAnonymous]
         public LoginResponse Login([FromBody] dynamic loginData)
         {
-            Response.ContentType = "application/json";
             var result = new LoginResponse() { IsError = true };
             var login = (string)loginData.login;
             var password = (string)loginData.password;
@@ -57,9 +56,27 @@ namespace Vault.API.Controllers
             }
 
             result.IsError = false;
-            result.Token = JwtHelper.CreateToken(identity);
+            result.IsWaitEmailKey = true;
+            _authService.RequestEmailKey(user);
             return result;
         }
+
+        [HttpPost("token")]
+        [AllowAnonymous]
+        public LoginResponse Token([FromBody] string emailKey)
+        {
+            var result = new LoginResponse();
+            var user = _authService.GetUserByEmailKey(emailKey);
+            var identity = GetIdentity(user);
+
+            if (identity == null) {
+                result.IsError = true;
+                return result;
+            };
+
+            result.Token = JwtHelper.CreateToken(identity);
+            return result;
+        } 
 
         [HttpPost("register/step-one")]
         [AllowAnonymous]

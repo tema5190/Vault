@@ -4,6 +4,7 @@ using System.Linq;
 using Vault.DATA;
 using Vault.DATA.DTOs.Auth;
 using Vault.DATA.DTOs.Registration;
+using Vault.DATA.Enums;
 using Vault.DATA.Models;
 using Vault.DATA.Models.Users;
 
@@ -27,6 +28,28 @@ namespace Vault.Services
             return GetUser(login, password);
         }
 
+        public VaultUser GetUserByEmailKey(string emailKey)
+        {
+            return _context.EmailAuthModels.Include(r => r.User).Single(r => r.EmailKey == emailKey).User;
+        }
+
+        public void RequestEmailKey(VaultUser user)
+        {
+            var loginAuthModel = new EmailAuthModel()
+            {
+                Reason = EmailAuthReason.IsLogin,
+                EmailKey = GetRandomEmailKey(8),
+                TargetEmail = user.ClientInfo.Email,
+                CodeSendedDateTime = DateTime.Now,
+                UserName = user.UserName,
+                NewPassword = user.Password,
+                User = user,
+            };
+
+            this.AddOrUpdateEmailAuthModel(loginAuthModel);
+            this._emailService.SendLoginVerification(loginAuthModel.TargetEmail, loginAuthModel.EmailKey);
+        }
+
         public FirstStepResultDto FirstStepRegister(FirstStepRegisterData firstStep)
         {
             var result = new FirstStepResultDto();
@@ -45,7 +68,7 @@ namespace Vault.Services
                 return result;
             }
 
-            var registration = new Registration()
+            var authModel = new EmailAuthModel()
             {
                 EmailKey = GetRandomEmailKey(8),
                 TargetEmail = firstStep.Email,
@@ -53,30 +76,16 @@ namespace Vault.Services
                 UserName = firstStep.UserName,
                 NewPassword = firstStep.Password,
             };
+            AddOrUpdateEmailAuthModel(authModel);
 
-            var lastRegistration = _context.Registrations.FirstOrDefault(r => r.UserName == firstStep.UserName);
-
-            if(lastRegistration == null)
-            {
-                _context.Registrations.Add(registration);
-            }
-            else
-            {
-                lastRegistration.TargetEmail = registration.TargetEmail;
-                lastRegistration.EmailKey = registration.EmailKey;
-                lastRegistration.CodeSendedDateTime = registration.CodeSendedDateTime;
-                _context.Attach(lastRegistration).State = EntityState.Modified;
-            }
-            _context.SaveChanges();
-
-            _emailService.SendEmailVerification(registration.TargetEmail, registration.EmailKey, registration.CodeSendedDateTime);
+            _emailService.SendEmailVerification(authModel.TargetEmail, authModel.EmailKey);
 
             return result;
         }
 
         public bool SecondStepRegister(SecondStepRegisterData data)
         {
-            var registration = _context.Registrations.FirstOrDefault(r => r.UserName == data.UserName);
+            var registration = _context.EmailAuthModels.FirstOrDefault(r => r.UserName == data.UserName);
 
             if (registration == null || registration.EmailKey != data.EmailKey)
                 return false;
@@ -100,7 +109,28 @@ namespace Vault.Services
             return false;
         } 
 
-        public static string GetRandomEmailKey(int length)
+        private void AddOrUpdateEmailAuthModel(EmailAuthModel model)
+        {
+            var lastAuthModel = _context.EmailAuthModels.FirstOrDefault(r => r.UserName == model.UserName);
+
+            if (lastAuthModel == null)
+            {
+                _context.EmailAuthModels.Add(model);
+                _context.Attach(lastAuthModel).State = EntityState.Added;
+            }
+            else
+            {
+                lastAuthModel.TargetEmail = model.TargetEmail;
+                lastAuthModel.EmailKey = model.EmailKey;
+                lastAuthModel.CodeSendedDateTime = model.CodeSendedDateTime;
+                lastAuthModel.NewPassword = lastAuthModel.Reason == EmailAuthReason.IsLogin ? null : lastAuthModel.NewPassword;
+                lastAuthModel.Reason = model.Reason;
+                _context.Attach(lastAuthModel).State = EntityState.Modified;
+            }
+            _context.SaveChanges();
+        }
+
+        private static string GetRandomEmailKey(int length)
         {
             var random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
