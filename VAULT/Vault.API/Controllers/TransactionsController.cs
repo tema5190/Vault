@@ -28,7 +28,7 @@ namespace Vault.API.Controllers
             return this._transactionsService.GetAllCardTransactions(userName, cardId);
         }
 
-        [HttpGet("/bygoal/{goalId")]
+        [HttpGet("/bygoal/{goalId}")]
         public IList<RefillTransaction> GetAllGoalTransactions(int goalId)
         {
             var userName = User.Identity.Name;
