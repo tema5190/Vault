@@ -58,6 +58,19 @@ namespace Vault.DATA
                            CustomCardName = "My salary credit card",
                            ExpirationDate = new DateTime(2019, 2, 5),
                            CardNumber = "8800555353511111",
+                           OwnerFullName = "Mr Gleb Kulix",
+                           CVV = "228",
+                           CardBalance = 1488,
+                         },
+                         new CreditCard()
+                         {
+                           CardType = CardType.MasterCard,
+                           CustomCardName = "My mom cards",
+                           ExpirationDate = new DateTime(2019, 2, 5),
+                           CardNumber = "8800555353511111",
+                           OwnerFullName = "Ms Gleb Kulix's Mother",
+                           CVV = "555",
+                           CardBalance = 8800,
                          }
                      },
                      Email = "test@test",
