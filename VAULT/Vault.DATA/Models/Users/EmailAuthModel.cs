@@ -21,9 +21,5 @@ namespace Vault.DATA.Models.Users
         public string TargetEmail { get; set; }
 
         public string EmailKey { get; set; }
-
-        // FK to VaultUser
-        public VaultUser User { get; set; }
-        public int UserId { get; set; }
     }
 }

@@ -63,8 +63,10 @@ namespace Vault.API.Controllers
 
         [HttpPost("token")]
         [AllowAnonymous]
-        public LoginResponse Token([FromBody] string emailKey)
+        public LoginResponse Token([FromBody] dynamic loginData)
         {
+            var emailKey = (string)loginData.emailKey;
+
             var result = new LoginResponse();
             var user = _authService.GetUserByEmailKey(emailKey);
             var identity = GetIdentity(user);

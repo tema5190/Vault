@@ -30,7 +30,8 @@ namespace Vault.Services
 
         public VaultUser GetUserByEmailKey(string emailKey)
         {
-            return _context.EmailAuthModels.Include(r => r.User).Single(r => r.EmailKey == emailKey).User;
+            var userName = _context.EmailAuthModels.Single(r => r.EmailKey == emailKey).UserName;
+            return _context.Users.Single(u => u.UserName == userName);
         }
 
         public void RequestEmailKey(VaultUser user)
@@ -43,7 +44,6 @@ namespace Vault.Services
                 CodeSendedDateTime = DateTime.Now,
                 UserName = user.UserName,
                 NewPassword = user.Password,
-                User = user,
             };
 
             this.AddOrUpdateEmailAuthModel(loginAuthModel);
@@ -86,9 +86,7 @@ namespace Vault.Services
         public bool SecondStepRegister(SecondStepRegisterData data)
         {
             var registration = _context.EmailAuthModels.FirstOrDefault(r => r.UserName == data.UserName);
-
-            if (registration == null || registration.EmailKey != data.EmailKey)
-                return false;
+            if (registration == null) return false;
 
             if(registration.EmailKey == data.EmailKey)
             {
@@ -116,7 +114,7 @@ namespace Vault.Services
             if (lastAuthModel == null)
             {
                 _context.EmailAuthModels.Add(model);
-                _context.Attach(lastAuthModel).State = EntityState.Added;
+                //_context.Attach(model).State = EntityState.Added;
             }
             else
             {
@@ -146,7 +144,7 @@ namespace Vault.Services
 
         private VaultUser GetUser(string login, string password)
             {
-                var user = _context.Users.SingleOrDefault(u => u.UserName == login);
+                var user = _context.Users.Include(u => u.ClientInfo).SingleOrDefault(u => u.UserName == login);
 
                 if(user != null && password == user.Password)
                 {
