@@ -167,7 +167,7 @@ namespace Vault.DATA.Migrations
             modelBuilder.Entity("Vault.DATA.Models.Goal", b =>
                 {
                     b.HasOne("Vault.DATA.Models.ClientInfo")
-                        .WithMany("Targets")
+                        .WithMany("Goals")
                         .HasForeignKey("ClientInfoId");
                 });
 

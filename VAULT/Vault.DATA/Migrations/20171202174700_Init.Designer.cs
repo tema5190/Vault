@@ -12,8 +12,8 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171201205355_ClientInfoEmailAdded")]
-    partial class ClientInfoEmailAdded
+    [Migration("20171202174700_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,7 +168,7 @@ namespace Vault.DATA.Migrations
             modelBuilder.Entity("Vault.DATA.Models.Goal", b =>
                 {
                     b.HasOne("Vault.DATA.Models.ClientInfo")
-                        .WithMany("Targets")
+                        .WithMany("Goals")
                         .HasForeignKey("ClientInfoId");
                 });
 

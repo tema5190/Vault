@@ -24,19 +24,7 @@ namespace Vault.API
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("VaultDataBase");
-
-            //if (env.IsDevelopment())
-            //{
-            //    connection = 
-            //}
-            //else
-            //{
-            //    connection = Configuration.GetConnectionString("HostingDataBase");
-            //}
-
             services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
-
-            
 
             services.AddOptions();
             services.Configure<EmailSMTPConfiguration>(Configuration.GetSection("EmailSMTPConfiguration"));
@@ -73,7 +61,8 @@ namespace Vault.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer, VaultContext vaultContext)
         {
-            if(CheckUserExistingInDb(vaultContext))
+            
+            if (CheckUserExistingInDb(vaultContext))
             {
                 contextInitializer.SimpleInitialWithTwoUsers();
             }
@@ -92,7 +81,7 @@ namespace Vault.API
 
         private bool CheckUserExistingInDb(VaultContext context)
         {
-            return context.Users.Any() != null;
+            return context.Users.FirstOrDefault() == null;
         }
     }
 }
