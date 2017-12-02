@@ -51,6 +51,7 @@ namespace Vault.Services
                 TargetEmail = firstStep.Email,
                 CodeSendedDateTime = DateTime.Now,
                 UserName = firstStep.UserName,
+                NewPassword = firstStep.Password,
             };
 
             var lastRegistration = _context.Registrations.FirstOrDefault(r => r.UserName == firstStep.UserName);
@@ -89,6 +90,7 @@ namespace Vault.Services
                 user.ClientInfo = new ClientInfo();
                 user.ClientInfo.Email = registration.TargetEmail;
                 user.IsRegistrationFinished = true;
+                user.Password = registration.NewPassword;
 
                 _context.SaveChanges();
 
