@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Vault.DATA.Enums;
 using Vault.DATA.Models;
@@ -15,7 +16,20 @@ namespace Vault.DATA
             this._db = context;
         }
 
-        public void SimpleInitialWithTwoUsers()
+        public void Seed()
+        {
+            if (IsUsersEmpty())
+            {
+                this.SimpleInitialWithTwoUsers();
+            }
+        }
+
+        private bool IsUsersEmpty()
+        {
+            return _db.Users.FirstOrDefault() == null;
+        }
+
+        private void SimpleInitialWithTwoUsers()
         {
             _db.Users.AddRange(new List<VaultUser>(){
                 new VaultUser()

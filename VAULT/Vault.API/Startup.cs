@@ -59,16 +59,11 @@ namespace Vault.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer, VaultContext vaultContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer)
         {
-            
-            if (CheckUserExistingInDb(vaultContext))
-            {
-                contextInitializer.SimpleInitialWithTwoUsers();
-            }
-
             if (env.IsDevelopment())
             {
+                contextInitializer.Seed();
                 app.UseDeveloperExceptionPage();
             }
 
