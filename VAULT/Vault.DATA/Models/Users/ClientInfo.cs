@@ -14,7 +14,7 @@ namespace Vault.DATA.Models
         public string Email { get; set; }
 
         public IList<CreditCard> Cards { get; set; }
-        public IList<Goal> Targets { get; set; }
+        public IList<Goal> Goals { get; set; }
         public IList<RefillTransaction> Transactions { get; set; }
     }
 }

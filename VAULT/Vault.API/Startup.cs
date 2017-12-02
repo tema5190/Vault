@@ -8,6 +8,7 @@ using Vault.Services;
 using Vault.DATA;
 using Microsoft.EntityFrameworkCore;
 using Vault.DATA.DTOs.Email;
+using System.Linq;
 
 namespace Vault.API
 {
@@ -64,13 +65,19 @@ namespace Vault.API
             services.AddTransient<UserService>();
             services.AddTransient<CreditCardService>();
             services.AddTransient<EmailService>();
+            services.AddTransient<VaultContextInitializer>();
 
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer, VaultContext vaultContext)
         {
+            if(CheckUserExistingInDb(vaultContext))
+            {
+                contextInitializer.SimpleInitialWithTwoUsers();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -81,6 +88,11 @@ namespace Vault.API
             app.UseAuthentication();
 
             app.UseMvc();
+        }
+
+        private bool CheckUserExistingInDb(VaultContext context)
+        {
+            return context.Users.Any() != null;
         }
     }
 }
