@@ -25,8 +25,8 @@ namespace Vault.API
             string connection = Configuration.GetConnectionString("VaultDataBase");
             services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
 
-
-            services.Configure<EmailSMTPConfiguration>(Configuration);
+            services.AddOptions();
+            services.Configure<EmailSMTPConfiguration>(Configuration.GetSection("EmailSMTPConfiguration"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -63,6 +63,8 @@ namespace Vault.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles();
 
             app.UseAuthentication();
 

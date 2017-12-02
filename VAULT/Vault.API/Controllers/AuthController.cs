@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System;
 using Vault.DATA.Enums;
 using Vault.DATA.DTOs.Auth;
+using Vault.DATA.DTOs.Registration;
 
 namespace Vault.API.Controllers
 {
@@ -32,12 +33,19 @@ namespace Vault.API.Controllers
             var login = (string)loginData.login;
             var password = (string)loginData.password;
 
-            var user = await _authService.Login(login, password);
+            var user = _authService.Login(login, password);
 
             Response.ContentType = "application/json";
 
+            if(user == null)
+            {
+                Response.StatusCode = 400;
+                await Response.WriteAsync("Invalid username or password.");
+                return;
+            }
+
             if (!user.IsRegistrationFinished) { 
-                await Response.WriteAsync(JsonConvert.SerializeObject(new AuthResponse() { isRegistrationFinished = false }));
+                await Response.WriteAsync(JsonConvert.SerializeObject(new AuthResponse() { isRegistrationFinished = false }, new JsonSerializerSettings { Formatting = Formatting.Indented }));
                 return;
             }
 
@@ -52,6 +60,20 @@ namespace Vault.API.Controllers
 
             var token = JwtHelper.CreateToken(identity);
             await Response.WriteAsync(JsonConvert.SerializeObject(token, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+        }
+
+        [HttpPost("register/step-one")]
+        [AllowAnonymous]
+        public FirstStepResultDto FirstStepRegister([FromBody] FirstStepRegisterData firstStep)
+        {
+            return _authService.FirstStepRegister(firstStep);
+        }
+
+        [HttpPost("register/step-two")]
+        [AllowAnonymous]
+        public bool SecondStepRegister([FromBody] SecondStepRegisterData secondStep)
+        {
+            return _authService.SecondStepRegister(secondStep);
         }
 
         private ClaimsIdentity GetIdentity(VaultUser user)
@@ -69,12 +91,5 @@ namespace Vault.API.Controllers
             ClaimsIdentity.DefaultRoleClaimType);
             return claimsIdentity;
         }
-
-        //[HttpPost]
-        //[AllowAnonymous]
-        //public async Task<bool> Register([FromBody] RegisterData registerData)
-        //{
-        //    return await this._authService.Register(registerData);           
-        //}
     }
 }

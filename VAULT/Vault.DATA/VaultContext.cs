@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vault.DATA.Models;
+using Vault.DATA.Models.Users;
 
 namespace Vault.DATA
 {
@@ -11,5 +12,6 @@ namespace Vault.DATA
         public DbSet<CreditCard> Cards { get; set; }
         public DbSet<RefillTransaction> Transactions { get; set; }
         public DbSet<Goal> Targets { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using Vault.DATA;
@@ -12,47 +12,73 @@ namespace Vault.Services
     public class EmailService
     {
         private readonly VaultContext _db;
-        private readonly IOptions<EmailSMTPConfiguration> _smptpOptions;
+        private readonly EmailSMTPConfiguration _smptpOptions;
 
-        public EmailService(VaultContext vaultContext, IConfiguration configuration, IOptions<EmailSMTPConfiguration> options)
+        public EmailService(VaultContext vaultContext, IOptions<EmailSMTPConfiguration> options)
         {
-            this._db = vaultContext;
-            this._smptpOptions = options;
-
+            _db = vaultContext;
+            _smptpOptions = options.Value;
         }
 
-        public void SendEmailVerification(string email)
+        public void SendEmailVerification(string email, string key, DateTime sendDate)
         {
-            
+            FileStream fileStream = new FileStream($@"{Directory.GetCurrentDirectory()}\wwwroot\FirstStepRegistration.html", FileMode.Open);
+            var sb = new StringBuilder();
+            using (var sr = new StreamReader(fileStream))
+            {
+                while (!sr.EndOfStream)
+                {
+                    sb.Append(sr.ReadLine());
+                }
+            }
+            var emailContent = sb.ToString();
+            emailContent = emailContent.Replace("*CODE*", key);
+            emailContent = emailContent.Replace("*Month Year*", sendDate.ToLongDateString());
+            emailContent = AddCongirmRegistrationContent(emailContent); 
+
+            SendEmail(email, emailContent, "Email verification");
+        }
+
+        private string AddCongirmRegistrationContent(string message)
+        {
+            return message.Replace("*REGISTRATIONTEXT*", "This email is to confirm your recent registration.");
+        }
+
+        private string AddConfirmLogInContent(string message)
+        {
+            return message.Replace("*REGISTRATIONTEXT*", "This email is to confirm your recent login");
         }
 
         public void SendEmail(string email, string content, string subject)
         {
-            var mail = new MailMessage(this._smptpOptions.Value.Email, email);
+            var mail = new MailMessage(_smptpOptions.Email, email);
             mail.Subject = subject ?? "";
-            mail.Body = this.GetEmailWithSign(content);
-
-            var smtpClient = this.GetSMTPClient();
+            mail.IsBodyHtml = true;
+            mail.Priority = MailPriority.High;
+            mail.Body = content;
+            var smtpClient = GetSMTPClient();
             smtpClient.Send(mail);
         }
 
-        private string GetEmailWithSign(string message)
+        private void AddSignToEmailContent(string message)
         {
             var sb = new StringBuilder(message);
             sb.AppendLine();
-            sb.AppendLine();
-            sb.AppendLine();
-            sb.Append(this._smptpOptions.Value.Sign);
-            return sb.ToString();
+            sb.Append(this._smptpOptions.Sign);
+            message = sb.ToString();
         }
 
         private SmtpClient GetSMTPClient() {
 
-            SmtpClient client = new SmtpClient();
-            client.Port = this._smptpOptions.Value.Port;
-            client.Host = this._smptpOptions.Value.Host;
-            client.UseDefaultCredentials = this._smptpOptions.Value.UseDefaultCredentials;
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            SmtpClient client = new SmtpClient
+            {
+                Port = _smptpOptions.Port,
+                Host = _smptpOptions.Host,
+                UseDefaultCredentials = _smptpOptions.UseDefaultCredentials,
+                Credentials = new NetworkCredential(_smptpOptions.Email, _smptpOptions.Password),
+                EnableSsl = _smptpOptions.UseSSL,
+                DeliveryMethod = SmtpDeliveryMethod.Network
+            };
             return client;
         }
     }
