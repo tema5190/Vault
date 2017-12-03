@@ -67,13 +67,13 @@ namespace Vault.Services
             return true;
         }
 
-        public async Task<bool> DeleteUserCard(string userName, CreditCardDto cardToDelete)
+        public async Task<bool> DeleteUserCard(string userName, int cardId)
         {
             var user = await _db.Users.Include(u => u.ClientInfo.Cards)
                                         .Include(u => u.ClientInfo.Goals)
                                         .FirstOrDefaultAsync(u => u.UserName == userName);
 
-            var card = user.ClientInfo.Cards.SingleOrDefault(c => c.Id == cardToDelete.CreditCardId);
+            var card = user.ClientInfo.Cards.SingleOrDefault(c => c.Id == cardId);
 
             if (card == null)
             {

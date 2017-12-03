@@ -44,11 +44,11 @@ namespace Vault.API.Controllers
             return await _creditCardService.AddUserCard(userName, newCard);
         }
 
-        [HttpPost("delete")]
-        public async Task<bool> DeleteUserCard([FromBody] CreditCardDto cardToDelete)
+        [HttpDelete("delete/{cardId}")]
+        public async Task<bool> DeleteUserCard([FromBody] int cardId)
         {
             var userName = User.Identity.Name;
-            return await _creditCardService.DeleteUserCard(userName, cardToDelete);
+            return await _creditCardService.DeleteUserCard(userName, cardId);
         }
     }
 }
