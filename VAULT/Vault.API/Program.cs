@@ -9,21 +9,12 @@ namespace Vault.API
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-            .CaptureStartupErrors(true)
-            .UseKestrel()
-            .UseIISIntegration()
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .UseStartup<Startup>()
-            .Build();
-
-            host.Run();
-
-            //BuildWebHost(args).Run();
+            BuildWebHost(args).Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .CaptureStartupErrors(true)
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()

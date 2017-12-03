@@ -82,6 +82,8 @@ namespace Vault.DATA.Migrations
 
                     b.Property<decimal>("MoneyCurrent");
 
+                    b.Property<decimal>("MoneyPerMonth");
+
                     b.Property<decimal>("MoneyTarget");
 
                     b.Property<DateTime>("TargetEnd");

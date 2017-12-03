@@ -23,6 +23,24 @@ namespace Vault.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmailAuthModels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CodeSendedDateTime = table.Column<DateTime>(nullable: false),
+                    EmailKey = table.Column<string>(nullable: true),
+                    NewPassword = table.Column<string>(nullable: true),
+                    Reason = table.Column<int>(nullable: false),
+                    TargetEmail = table.Column<string>(nullable: true),
+                    UserName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailAuthModels", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -80,31 +98,6 @@ namespace Vault.DATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmailAuthModels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CodeSendedDateTime = table.Column<DateTime>(nullable: false),
-                    EmailKey = table.Column<string>(nullable: true),
-                    NewPassword = table.Column<string>(nullable: true),
-                    Reason = table.Column<int>(nullable: false),
-                    TargetEmail = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
-                    UserName = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmailAuthModels", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EmailAuthModels_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Targets",
                 columns: table => new
                 {
@@ -115,6 +108,7 @@ namespace Vault.DATA.Migrations
                     Description = table.Column<string>(nullable: true),
                     IsPaused = table.Column<bool>(nullable: false),
                     MoneyCurrent = table.Column<decimal>(nullable: false),
+                    MoneyPerMonth = table.Column<decimal>(nullable: false),
                     MoneyTarget = table.Column<decimal>(nullable: false),
                     TargetEnd = table.Column<DateTime>(nullable: false),
                     TargetStart = table.Column<DateTime>(nullable: false),
@@ -182,11 +176,6 @@ namespace Vault.DATA.Migrations
                 name: "IX_Cards_OwnerId",
                 table: "Cards",
                 column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EmailAuthModels_UserId",
-                table: "EmailAuthModels",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Targets_ClientInfoId",

@@ -22,7 +22,7 @@ namespace Vault.API.Controllers
             this.initializer = new VaultContextInitializer(this.db);
         }
 
-        [HttpGet("NENADO")]
+        [HttpGet("db-redrop")]
         [AllowAnonymous]
         public void DropDb()
         {

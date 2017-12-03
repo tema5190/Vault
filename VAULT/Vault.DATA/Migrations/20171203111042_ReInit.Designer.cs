@@ -12,7 +12,7 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171202221612_ReInit")]
+    [Migration("20171203111042_ReInit")]
     partial class ReInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,6 +83,8 @@ namespace Vault.DATA.Migrations
 
                     b.Property<decimal>("MoneyCurrent");
 
+                    b.Property<decimal>("MoneyPerMonth");
+
                     b.Property<decimal>("MoneyTarget");
 
                     b.Property<DateTime>("TargetEnd");
@@ -143,13 +145,9 @@ namespace Vault.DATA.Migrations
 
                     b.Property<string>("TargetEmail");
 
-                    b.Property<int>("UserId");
-
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("EmailAuthModels");
                 });
@@ -211,14 +209,6 @@ namespace Vault.DATA.Migrations
                     b.HasOne("Vault.DATA.Models.Goal", "Goal")
                         .WithMany()
                         .HasForeignKey("GoalId");
-                });
-
-            modelBuilder.Entity("Vault.DATA.Models.Users.EmailAuthModel", b =>
-                {
-                    b.HasOne("Vault.DATA.Models.VaultUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Vault.DATA.Models.VaultUser", b =>
