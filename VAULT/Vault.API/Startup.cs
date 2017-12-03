@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Vault.DATA.DTOs.Email;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 
 namespace Vault.API
 {
@@ -60,13 +61,15 @@ namespace Vault.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 //contextInitializer.Seed();
                 app.UseDeveloperExceptionPage();
             }
+
+            loggerFactory.AddConsole();
 
             app.UseStaticFiles();
 
