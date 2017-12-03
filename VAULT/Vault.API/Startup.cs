@@ -61,26 +61,21 @@ namespace Vault.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VaultContextInitializer contextInitializer, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
-                //contextInitializer.Seed();
                 app.UseDeveloperExceptionPage();
             }
 
             loggerFactory.AddConsole();
+            loggerFactory.AddDebug();
 
             app.UseStaticFiles();
 
             app.UseAuthentication();
 
             app.UseMvc();
-        }
-
-        private bool CheckUserExistingInDb(VaultContext context)
-        {
-            return context.Users.FirstOrDefault() == null;
         }
     }
 }
