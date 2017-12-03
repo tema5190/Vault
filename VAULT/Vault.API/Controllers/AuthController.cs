@@ -78,7 +78,7 @@ namespace Vault.API.Controllers
 
             result.Token = JwtHelper.CreateToken(identity);
             return result;
-        } 
+        }
 
         [HttpPost("register/step-one")]
         [AllowAnonymous]

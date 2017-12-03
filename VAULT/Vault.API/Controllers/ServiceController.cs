@@ -30,5 +30,12 @@ namespace Vault.API.Controllers
             this.db.Database.EnsureCreated();
             this.initializer.Seed();
         }
+
+        [HttpGet("ping")]
+        [AllowAnonymous]
+        public string Ping()
+        {
+            return Request.HttpContext.Connection.RemoteIpAddress.ToString();
+        }
     }
 }
