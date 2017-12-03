@@ -30,20 +30,6 @@ namespace Vault.API.Controllers
             return await _creditCardService.GetUserCards(userName);
         }
 
-        [HttpPost("add")]
-        public async Task<bool> AddUserCard([FromBody] CreditCardDto newCard)
-        {
-            var userName = User.Identity.Name;
-            return await _creditCardService.AddUserCard(userName, newCard);
-        }
-
-        [HttpDelete("delete")]
-        public async Task<bool> DeleteUserCard([FromBody] CreditCardDto cardToDelete)
-        {
-            var userName = User.Identity.Name;
-            return await _creditCardService.DeleteUserCard(userName, cardToDelete);
-        }
-
         [HttpGet("{id}")]
         public async Task<CreditCardDto> GetCreditCardById(int id)
         {
@@ -51,5 +37,18 @@ namespace Vault.API.Controllers
             return await _creditCardService.GetCreditCardById(userName, id);
         }
 
+        [HttpPost("add")]
+        public async Task<bool> AddUserCard([FromBody] CreditCardDto newCard)
+        {
+            var userName = User.Identity.Name;
+            return await _creditCardService.AddUserCard(userName, newCard);
+        }
+
+        [HttpPost("delete")]
+        public async Task<bool> DeleteUserCard([FromBody] CreditCardDto cardToDelete)
+        {
+            var userName = User.Identity.Name;
+            return await _creditCardService.DeleteUserCard(userName, cardToDelete);
+        }
     }
 }
