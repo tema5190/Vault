@@ -6,9 +6,9 @@ namespace Vault.API
     public class AuthOptions
     {
         public const string ISSUER = "VaultUser";
-        public const string AUDIENCE = "http://vault.com";
-        const string KEY = "qwertyuiop[]';lkjhgfdsazxcvbnm,./";
-        public const int LIFETIME = 5;
+        public const string AUDIENCE = "http://vaultbank.blackstar.com";
+        const string KEY = "pleaseiwanttowinwhat'swrongwithyouguys:(lookatcat=^_^=";
+        public const int LIFETIME = 15;
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {

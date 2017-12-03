@@ -10,28 +10,28 @@ using Vault.DATA.Models;
 
 namespace Vault.Services
 {
-    public class CreditCardService
+    public class UserCardService
     {
         private readonly UserService _userService;
         private readonly VaultContext _db;
 
-        public CreditCardService(UserService userService, VaultContext vaultContext)
+        public UserCardService(UserService userService, VaultContext vaultContext)
         {
             this._userService = userService;
             this._db = vaultContext;
         }
 
-        public async Task<IList<CreditCardDto>> GetUserCards(string userName)
+        public async Task<IList<UserCardDto>> GetUserCards(string userName)
         {
             var user = await _db.Users
                 .Include(u => u.ClientInfo.Cards)
                 .AsNoTracking()
                 .SingleAsync(u => u.UserName == userName);
 
-            return user.ClientInfo.Cards.Select(c => new CreditCardDto(c)).ToList();
+            return user.ClientInfo.Cards.Select(c => new UserCardDto(c)).ToList();
         }
 
-        public async Task<CreditCardDto> GetCreditCardById(string userName, int id)
+        public async Task<UserCardDto> GetCreditCardById(string userName, int id)
         {
             var user = await _db.Users.Include(u => u.ClientInfo.Cards).FirstOrDefaultAsync(u => u.UserName == userName);
 
@@ -41,16 +41,15 @@ namespace Vault.Services
 
             if (card == null) return null;
 
-            return new CreditCardDto(card);
+            return new UserCardDto(card);
         }
 
-        public async Task<bool> AddUserCard(string userName, CreditCardDto newCardDto)
+        public async Task<bool> AddUserCard(string userName, UserCardDto newCardDto)
         {
             var user = await _db.Users.Include(u => u.ClientInfo.Cards).SingleAsync(u => u.UserName == userName);
 
-            var newCard = new CreditCard()
+            var newCard = new UserCard()
             {
-                CardBalance = 0m,
                 CardNumber = newCardDto.CardNumber,
                 CardType = newCardDto.CardType,
                 CVV = newCardDto.CVV,

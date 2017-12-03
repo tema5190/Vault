@@ -1,9 +1,9 @@
 ﻿namespace Vault.DATA.Enums
 {
-    public enum EmailAuthReason
+    public enum AuthReason
     {
-        IsEmailVerification,
-        IsLogin,
-        IsForgotPassword,
+        TwoWayAuthTargetVerification,
+        Login,
+        ForgotPassword,
     }
 }

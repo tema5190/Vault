@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Vault.Services;
 using Vault.DATA.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Vault.API.Controllers
 {
     [Produces("application/json")]
     [Route("transactions")]
+    [Authorize]
     public class TransactionsController : Controller
     {
         private readonly TransactionsService _transactionsService;
@@ -20,7 +22,7 @@ namespace Vault.API.Controllers
             this._transactionsService = service;
         }
 
-        [HttpGet("/bycard/{cardId}")]
+        [HttpGet("bycard/{cardId}")]
         public IList<RefillTransaction> GetAllCardTransactions(int cardId)
         {
             var userName = User.Identity.Name;
@@ -28,12 +30,21 @@ namespace Vault.API.Controllers
             return this._transactionsService.GetAllCardTransactions(userName, cardId);
         }
 
-        [HttpGet("/bygoal/{goalId}")]
+        [HttpGet("bygoal/{goalId}")]
         public IList<RefillTransaction> GetAllGoalTransactions(int goalId)
         {
             var userName = User.Identity.Name;
             if (userName == null) return null;
             return this._transactionsService.GetAllGoalTransactions(userName, goalId);
+        }
+
+        [HttpGet("retry/{transactionId}")]
+        public async Task<bool> RetryTransactionById(int transactionId)
+        {
+            var userName = User.Identity.Name;
+            if (userName == null) return false;
+
+            return await this._transactionsService.TryToRetryTransaction(userName, transactionId);
         }
     }
 }

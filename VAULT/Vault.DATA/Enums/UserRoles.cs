@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Vault.DATA.Enums
+﻿namespace Vault.DATA.Enums
 {
-    public enum UserRoles
+    public enum UserRole
     {
         Manager = -1,
         Client = 1,

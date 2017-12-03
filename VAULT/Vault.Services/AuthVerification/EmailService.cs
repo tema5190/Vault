@@ -6,10 +6,11 @@ using System.Net.Mail;
 using System.Text;
 using Vault.DATA;
 using Vault.DATA.DTOs.Email;
+using Vault.Services.AuthVerification;
 
 namespace Vault.Services
 {
-    public class EmailService
+    public class EmailService : IAuthVerificationService
     {
         private readonly VaultContext _db;
         private readonly EmailSMTPConfiguration _smptpOptions;
@@ -20,18 +21,18 @@ namespace Vault.Services
             _smptpOptions = options.Value;
         }
 
-        public void SendEmailVerification(string email, string key)
+        public void SendAuthTypeVerification(string email, string key)
         {
             var emailContent = GetEmailTemplateContent(key);
             emailContent = AddConfirmRegistrationContent(emailContent); 
-            SendEmail(email, emailContent, "Email verification");
+            SendMessage(email, emailContent, "Email verification");
         }
 
         public void SendLoginVerification(string email, string key)
         {
             var emailContent = GetEmailTemplateContent(key);
             emailContent = AddConfirmLogInContent(emailContent);
-            SendEmail(email, emailContent, "Login verification");
+            SendMessage(email, emailContent, "Login verification");
         }
 
         private string GetEmailTemplateContent(string key = null)
@@ -65,7 +66,7 @@ namespace Vault.Services
             return message.Replace("*REGISTRATIONTEXT*", "This email is to confirm your recent login");
         }
 
-        public void SendEmail(string email, string content, string subject)
+        public void SendMessage(string email, string content, string subject)
         {
             var mail = new MailMessage(_smptpOptions.Email, email);
             mail.Subject = subject ?? "";

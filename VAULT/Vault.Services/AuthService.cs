@@ -15,12 +15,14 @@ namespace Vault.Services
         private readonly VaultContext _context;
         private readonly UserService _userService;
         private readonly EmailService _emailService;
+        private readonly SmsService _smsService;
 
-        public AuthService(VaultContext context, UserService userService, EmailService emailService)
+        public AuthService(VaultContext context, UserService userService, EmailService emailService, SmsService smsService)
         {
             _context = context;
             _userService = userService;
             _emailService = emailService;
+            _smsService = smsService;
         }
 
         public VaultUser Login(string login, string password)
@@ -28,26 +30,22 @@ namespace Vault.Services
             return GetUser(login, password);
         }
 
-        public VaultUser GetUserByEmailKey(string emailKey)
+        public VaultUser GetUserByAuthKey(string emailKey)
         {
-            var userName = _context.EmailAuthModels.Single(r => r.EmailKey == emailKey).UserName;
+            var userName = _context.AuthVerificationModel.Single(r => r.TwoWayAuthKey == emailKey).UserName;
             return _context.Users.Single(u => u.UserName == userName);
         }
 
-        public void RequestEmailKey(VaultUser user)
+        public void RequestAuthKey(VaultUser user)
         {
-            var loginAuthModel = new EmailAuthModel()
-            {
-                Reason = EmailAuthReason.IsLogin,
-                EmailKey = GetRandomEmailKey(8),
-                TargetEmail = user.ClientInfo.Email,
-                CodeSendedDateTime = DateTime.Now,
-                UserName = user.UserName,
-                NewPassword = user.Password,
-            };
-
-            this.AddOrUpdateEmailAuthModel(loginAuthModel);
-            this._emailService.SendLoginVerification(loginAuthModel.TargetEmail, loginAuthModel.EmailKey);
+            if (user.AuthModelType == AuthModelType.Email) { 
+                RequestEmailKey(user);
+                return;
+            }
+            if (user.AuthModelType == AuthModelType.Phone) { 
+                RequestSmsKey(user);
+                return;
+            }
         }
 
         public FirstStepResultDto FirstStepRegister(FirstStepRegisterData firstStep)
@@ -62,33 +60,39 @@ namespace Vault.Services
                 return result;
             }
 
-            if (CheckEmailExistanse(firstStep.Email))
+            if (CheckAuthModelTargetExistanse(firstStep.TwoWayAuthTarget, firstStep.AuthModelType))
             {
-                result.IsEmailExist = true;
+                result.IsEmailOrPhoneExists = true;
                 return result;
             }
 
-            var authModel = new EmailAuthModel()
+            var authModel = new AuthVerificationModel() // TOOD add ctor... ehhh
             {
-                EmailKey = GetRandomEmailKey(8),
-                TargetEmail = firstStep.Email,
+                Reason = AuthReason.TwoWayAuthTargetVerification,
+                AuthModelType = firstStep.AuthModelType,
+
+                TwoWayAuthKey = GetRandomTwoWayAuthKey(8),
+
+                TargetPhone = firstStep.AuthModelType == AuthModelType.Phone ? firstStep.TwoWayAuthTarget : null,
+                TargetEmail = firstStep.AuthModelType == AuthModelType.Email ? firstStep.TwoWayAuthTarget : null,
+
                 CodeSendedDateTime = DateTime.Now,
                 UserName = firstStep.UserName,
                 NewPassword = firstStep.Password,
             };
-            AddOrUpdateEmailAuthModel(authModel);
 
-            _emailService.SendEmailVerification(authModel.TargetEmail, authModel.EmailKey);
+            AddOrUpdateEmailAuthModel(authModel);
+            _emailService.SendAuthTypeVerification(authModel.TargetEmail, authModel.TwoWayAuthKey);
 
             return result;
         }
 
         public bool SecondStepRegister(SecondStepRegisterData data)
         {
-            var registration = _context.EmailAuthModels.FirstOrDefault(r => r.UserName == data.UserName);
+            var registration = _context.AuthVerificationModel.FirstOrDefault(r => r.UserName == data.UserName);
             if (registration == null) return false;
 
-            if(registration.EmailKey == data.EmailKey)
+            if(registration.TwoWayAuthKey == data.TwoWayAuthKey)
             {
                 var user = _context.Users.Include(u => u.ClientInfo).FirstOrDefault(u => u.UserName == data.UserName);
 
@@ -105,30 +109,69 @@ namespace Vault.Services
             }
 
             return false;
-        } 
+        }
 
-        private void AddOrUpdateEmailAuthModel(EmailAuthModel model)
+        private void RequestEmailKey(VaultUser user)
         {
-            var lastAuthModel = _context.EmailAuthModels.FirstOrDefault(r => r.UserName == model.UserName);
+            var loginAuthModel = new AuthVerificationModel()
+            {
+                Reason = AuthReason.Login,
+                AuthModelType = AuthModelType.Email,
+
+                TwoWayAuthKey = GetRandomTwoWayAuthKey(8),
+
+                TargetEmail = user.ClientInfo.Email,
+
+                CodeSendedDateTime = DateTime.Now,
+                UserName = user.UserName,
+                NewPassword = user.Password,
+            };
+
+            this.AddOrUpdateEmailAuthModel(loginAuthModel);
+            this._emailService.SendLoginVerification(loginAuthModel.TargetEmail, loginAuthModel.TwoWayAuthKey);
+        }
+
+        private void RequestSmsKey(VaultUser user)
+        {
+            var loginAuthModel = new AuthVerificationModel()
+            {
+                Reason = AuthReason.Login,
+                AuthModelType = AuthModelType.Phone,
+
+                TwoWayAuthKey = GetRandomTwoWayAuthKey(8),
+
+                TargetPhone = user.ClientInfo.Phone,
+
+                CodeSendedDateTime = DateTime.Now,
+                UserName = user.UserName,
+                NewPassword = user.Password,
+            };
+
+            this.AddOrUpdateEmailAuthModel(loginAuthModel);
+            this._smsService.SendLoginVerification(loginAuthModel.TargetPhone, loginAuthModel.TwoWayAuthKey);
+        }
+
+        private void AddOrUpdateEmailAuthModel(AuthVerificationModel model)
+        {
+            var lastAuthModel = _context.AuthVerificationModel.FirstOrDefault(r => r.UserName == model.UserName);
 
             if (lastAuthModel == null)
             {
-                _context.EmailAuthModels.Add(model);
-                //_context.Attach(model).State = EntityState.Added;
+                _context.AuthVerificationModel.Add(model);
             }
             else
             {
                 lastAuthModel.TargetEmail = model.TargetEmail;
-                lastAuthModel.EmailKey = model.EmailKey;
+                lastAuthModel.TwoWayAuthKey = model.TwoWayAuthKey;
                 lastAuthModel.CodeSendedDateTime = model.CodeSendedDateTime;
-                lastAuthModel.NewPassword = lastAuthModel.Reason == EmailAuthReason.IsLogin ? null : lastAuthModel.NewPassword;
+                lastAuthModel.NewPassword = lastAuthModel.Reason == AuthReason.Login ? null : lastAuthModel.NewPassword;
                 lastAuthModel.Reason = model.Reason;
                 _context.Attach(lastAuthModel).State = EntityState.Modified;
             }
             _context.SaveChanges();
         }
 
-        private static string GetRandomEmailKey(int length)
+        private static string GetRandomTwoWayAuthKey(int length)
         {
             var random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -136,21 +179,33 @@ namespace Vault.Services
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+        private bool CheckAuthModelTargetExistanse(string target, AuthModelType type)
+        {
+            if (type == AuthModelType.Email)
+                return CheckEmailExistanse(target);
+
+            return CheckPhoneExistanse(target);
+        }
+
         private bool CheckEmailExistanse(string email)
         {
-            var isExist = _context.Users.Include(u => u.ClientInfo).FirstOrDefault(ci => ci.ClientInfo.Email == email) != null;
-            return isExist;
+            return _context.Users.Include(u => u.ClientInfo).FirstOrDefault(ci => ci.ClientInfo.Email == email) != null;
+        }
+
+        private bool CheckPhoneExistanse(string phone)
+        {
+            return _context.Users.Include(u => u.ClientInfo).FirstOrDefault(ci => ci.ClientInfo.Phone == phone) != null;
         }
 
         private VaultUser GetUser(string login, string password)
-            {
-                var user = _context.Users.Include(u => u.ClientInfo).SingleOrDefault(u => u.UserName == login);
+        {
+            var user = _context.Users.Include(u => u.ClientInfo).SingleOrDefault(u => u.UserName == login);
 
-                if(user != null && password == user.Password)
-                {
-                    return user;
-                }
-                return null;
+            if(user != null && password == user.Password)
+            {
+                return user;
             }
+            return null;
         }
+    }
 }

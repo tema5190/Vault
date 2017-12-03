@@ -8,7 +8,12 @@ using Vault.Services;
 using Vault.DATA;
 using Microsoft.EntityFrameworkCore;
 using Vault.DATA.DTOs.Email;
-using Microsoft.Extensions.Logging;
+using Vault.DATA.DTOs;
+using FluentScheduler;
+using Vault.Schedule;
+using System.Diagnostics;
+using System;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Vault.API
 {
@@ -29,6 +34,7 @@ namespace Vault.API
             services.AddOptions();
 
             services.Configure<EmailSMTPConfiguration>(Configuration.GetSection("EmailSMTPConfiguration"));
+            services.Configure<SmsConfiguration>(Configuration.GetSection("PhoneConfiguration"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -52,24 +58,54 @@ namespace Vault.API
            
             services.AddTransient<AuthService>();
             services.AddTransient<UserService>();
-            services.AddTransient<CreditCardService>();
+            services.AddTransient<UserCardService>();
             services.AddTransient<EmailService>();
             services.AddTransient<VaultContextInitializer>();
-            services.AddMvc();
+            services.AddTransient<GoalService>();
+            services.AddTransient<SmsService>();
+            services.AddTransient<BankOperationService>();
+            services.AddTransient<TransactionsService>();
+
+            // Sheduler section
+            services.AddTransient<BankJobFactory>();
+            services.AddTransient<CalculateProfitJob>();
+            services.AddTransient<ExecuteDailyTransactionsJob>();
+            var provider = services.BuildServiceProvider();
+
+            JobManager.JobFactory = new BankJobFactory(provider);
+            JobManager.Initialize(new BankJobRegisty());
+            JobManager.Start();
+            //
+
+            services.AddMvc(); // <---
+
+            // Swagger section
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Vault API v1", Version = "v1" });
+            });
+            //
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
+        {   
+            // Swagger section
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Vault API V1");
+            });
+            //
+
+
+            app.UseAuthentication();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseStaticFiles();
-
-            app.UseAuthentication();
-
             app.UseMvc();
         }
     }

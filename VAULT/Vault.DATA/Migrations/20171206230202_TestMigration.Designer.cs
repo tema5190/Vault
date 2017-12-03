@@ -12,9 +12,10 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    partial class VaultContextModelSnapshot : ModelSnapshot
+    [Migration("20171206230202_TestMigration")]
+    partial class TestMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

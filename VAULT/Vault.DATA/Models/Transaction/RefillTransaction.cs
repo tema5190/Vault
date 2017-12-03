@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Vault.DATA.Models
 {
@@ -7,13 +8,20 @@ namespace Vault.DATA.Models
         [Key]
         public int Id { get; set; }
 
-        public bool IsPausedError { get; set; }
+        public bool IsPausedOrError { get; set; }
+
+        public DateTime TransactionDateTime { get; set; }
+
+        public decimal Money { get; set; }
+
+        public bool TransactionIsRetried { get; set; }
+        public string Status { get; set; }
 
         // Navigation property
-        public int? CardId { get; set; }
-        public CreditCard CreditCard { get; set; }
+        public int CardId { get; set; }
+        public UserCard CreditCard { get; set; }
 
-        public int? GoalId { get; set; }
+        public int GoalId { get; set; }
         public Goal Goal { get; set; }
     }
 }

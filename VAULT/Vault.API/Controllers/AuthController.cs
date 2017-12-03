@@ -18,6 +18,7 @@ namespace Vault.API.Controllers
 {
     [Produces("application/json")]
     [Route("auth")]
+    [Authorize]
     public class AuthController : Controller
     {
         private readonly AuthService _authService;
@@ -56,8 +57,8 @@ namespace Vault.API.Controllers
             }
 
             result.IsError = false;
-            result.IsWaitEmailKey = true;
-            _authService.RequestEmailKey(user);
+            result.IsWaitTwoWayKey = true;
+            _authService.RequestAuthKey(user);
             return result;
         }
 
@@ -65,10 +66,10 @@ namespace Vault.API.Controllers
         [AllowAnonymous]
         public LoginResponse Token([FromBody] dynamic loginData)
         {
-            var emailKey = (string)loginData.emailKey;
+            var authKey = (string)loginData.authKey;
 
             var result = new LoginResponse();
-            var user = _authService.GetUserByEmailKey(emailKey);
+            var user = _authService.GetUserByAuthKey(authKey);
             var identity = GetIdentity(user);
 
             if (identity == null) {
@@ -101,7 +102,7 @@ namespace Vault.API.Controllers
             var claims = new List<Claim>
             {
             new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
-            new Claim(ClaimsIdentity.DefaultRoleClaimType, Enum.GetName(typeof(UserRoles), user.Role))
+            new Claim(ClaimsIdentity.DefaultRoleClaimType, Enum.GetName(typeof(UserRole), user.Role))
             };
 
             ClaimsIdentity claimsIdentity =

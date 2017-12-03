@@ -15,15 +15,17 @@ namespace Vault.DATA.Models
 
         public decimal MoneyTarget { get; set; }
         public decimal MoneyPerMonth { get; set; }
-        public decimal MoneyCurrent { get; set; }
+        public decimal CurrentMoney { get; set; }
 
         public bool IsPaused { get; set; }
+
+        public DateTime ChargeDate { get; set; } // day of month
 
         public TargetType TargetType { get; set; }
         public DateTime TargetStart { get; set; }
         public DateTime TargetEnd { get; set; }
 
         public int? CreditCardId { get; set; }
-        public CreditCard CreditCard { get; set; }
+        public UserCard CreditCard { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using Vault.DATA.Enums;
 
 namespace Vault.DATA.DTOs.Cards
 {
-    public class CreditCardDto
+    public class UserCardDto
     {
         public int? CreditCardId { get; set; }
 
@@ -16,12 +16,12 @@ namespace Vault.DATA.DTOs.Cards
         public DateTime ExpirationDate { get; set; }
         public string CVV { get; set; }
 
-        public CreditCardDto()
+        public UserCardDto()
         {
 
         }
 
-        public CreditCardDto(CreditCard card)
+        public UserCardDto(UserCard card)
         {
             CreditCardId = card.Id;
             CustomCardName = card.CustomCardName;

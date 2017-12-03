@@ -16,11 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentScheduler" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
+    <PackageReference Include="Twilio" Version="5.9.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +35,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vault.DATA\Vault.DATA.csproj" />
+    <ProjectReference Include="..\Vault.Schedule\Vault.Schedule.csproj" />
     <ProjectReference Include="..\Vault.Services\Vault.Services.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1template_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

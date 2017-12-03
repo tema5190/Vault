@@ -6,7 +6,7 @@ using Vault.DATA.Models;
 
 namespace Vault.DATA
 {
-    public class CreditCard
+    public class UserCard
     {
         [Key]
         public int Id { get; set; }
@@ -22,8 +22,6 @@ namespace Vault.DATA
         public CardType CardType { get; set; }
 
         public string CVV { get; set; }
-
-        public decimal CardBalance { get; set; }
 
         public bool IsPaused { get; set; }
         //

@@ -6,11 +6,11 @@ using Vault.DATA.Enums;
 
 namespace Vault.DATA.Models.Users
 {
-    public class EmailAuthModel
+    public class AuthVerificationModel
     {
         public int Id { get; set; }
 
-        public EmailAuthReason Reason { get; set; }
+        public AuthReason Reason { get; set; }
 
         public string UserName { get; set; }
 
@@ -18,8 +18,12 @@ namespace Vault.DATA.Models.Users
 
         public DateTime CodeSendedDateTime { get; set; }
 
+        public AuthModelType AuthModelType { get; set; }
+
         public string TargetEmail { get; set; }
 
-        public string EmailKey { get; set; }
+        public string TargetPhone { get; set; }
+
+        public string TwoWayAuthKey { get; set; }
     }
 }
