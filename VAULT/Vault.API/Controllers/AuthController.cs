@@ -30,11 +30,11 @@ namespace Vault.API.Controllers
 
         [HttpPost("")]
         [AllowAnonymous]
-        public LoginResponse Login([FromBody] dynamic loginData)
+        public LoginResponse Login([FromBody] LoginDto loginData)
         {
             var result = new LoginResponse() { IsError = true };
-            var login = (string)loginData.login;
-            var password = (string)loginData.password;
+            var login = loginData.Login;
+            var password = loginData.Password;
 
             var user = _authService.Login(login, password);
 
@@ -64,9 +64,9 @@ namespace Vault.API.Controllers
 
         [HttpPost("token")]
         [AllowAnonymous]
-        public LoginResponse Token([FromBody] dynamic loginData)
+        public LoginResponse Token([FromBody] TokenDto tokenDto)
         {
-            var authKey = (string)loginData.authKey;
+            var authKey = tokenDto.AuthKey;
 
             var result = new LoginResponse();
             var user = _authService.GetUserByAuthKey(authKey);
