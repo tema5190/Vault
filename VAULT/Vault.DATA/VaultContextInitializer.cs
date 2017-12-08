@@ -22,19 +22,15 @@ namespace Vault.DATA
 
         public void Seed()
         {
-            if (IsUsersEmpty())
+            // admin
+            var admin = new VaultUser()
             {
-                this.SimpleInitialWithTwoUsers();
-            }
-        }
-
-        private bool IsUsersEmpty()
-        {
-            return _db.Users.FirstOrDefault() == null;
-        }
-
-        private void SimpleInitialWithTwoUsers()
-        {
+                UserName = "admin",
+                Password = "admin",
+                Role = UserRole.Admin,
+                IsRegistrationFinished = true,
+            };
+            
             // 1
             var u1 = new VaultUser()
             {
@@ -214,7 +210,7 @@ namespace Vault.DATA
                 TransactionIsRetried = false,
             };
 
-            _db.Users.AddRange(new List<VaultUser>() { u1, u2 });
+            _db.Users.AddRange(new List<VaultUser>() { u1, u2, admin});
             _db.ClientInfos.Add(ci2);
             _db.UserCards.AddRange(u2.ClientInfo.Cards);
             _db.Goals.AddRange(u2.ClientInfo.Goals);

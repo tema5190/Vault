@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Vault.DATA;
-using Vault.DATA.Enums;
 using Vault.DATA.Models;
 using Vault.Services.BankOperation;
 
@@ -31,7 +29,10 @@ namespace Vault.Services
         {
             newTransactions = new List<RefillTransaction>();
 
-            var goalsToPerform = await this._db.Goals.Include(g => g.CreditCard).AsNoTracking().Where(g => IsGoalsCanPerformedToday(g)).ToListAsync();
+            var goalsToPerform = await this._db.Goals
+                .Include(g => g.CreditCard)
+                .AsNoTracking()
+                .Where(g => IsGoalsCanPerformedToday(g)).ToListAsync();
 
             if (goalsToPerform.Capacity == 0) return;
 
@@ -42,7 +43,7 @@ namespace Vault.Services
                 var goal = goalsToPerform[i];
                 var bankCard = bankCards.Find(bc => bc.CardNumber == goal.CreditCard.CardNumber);
 
-                TryToPerformTransactionAndAddInQueueList(goal, bankCard);
+                TryToPerformTransactionAndAddInSaveList(goal, bankCard);
             }
 
             await this._db.Transactions.AddRangeAsync(this.newTransactions);
@@ -57,7 +58,7 @@ namespace Vault.Services
             var goal = transaction.Goal;
             var bankCard = await GetBankCardToGetTransaction(transaction.CreditCard);
 
-            var isCompleted = TryToPerformTransactionAndAddInQueueList(goal, bankCard);
+            var isCompleted = TryToPerformTransactionAndAddInSaveList(goal, bankCard);
 
             if (!isCompleted) return false;
             
@@ -68,7 +69,7 @@ namespace Vault.Services
             return true;
         }
 
-        public bool TryToPerformTransactionAndAddInQueueList(Goal target, BankCard card)
+        public bool TryToPerformTransactionAndAddInSaveList(Goal target, BankCard card)
         {
             if (CheckIsCardBlocked(card))
             {
@@ -90,7 +91,7 @@ namespace Vault.Services
         public async Task<bool> TryToPerformTransaction(Goal target)
         {
             var bankCard = await GetBankCardToGetTransaction(target.CreditCard);
-            return TryToPerformTransactionAndAddInQueueList(target, bankCard);
+            return TryToPerformTransactionAndAddInSaveList(target, bankCard);
         }
 
         private void AddCorruptedTransaction(Goal target, string status = null)
@@ -102,6 +103,7 @@ namespace Vault.Services
                 CreditCard = target.CreditCard,
                 IsPausedOrError = true,
                 TransactionIsRetried = true,
+                Money = 0,
                 Status = status ?? "Unknown Error",
             });
         }

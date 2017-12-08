@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Vault.DATA;
 using Vault.DATA.DTOs.Auth;
 using Vault.DATA.DTOs.Registration;
@@ -25,9 +27,9 @@ namespace Vault.Services
             _smsService = smsService;
         }
 
-        public VaultUser Login(string login, string password)
+        public VaultUser Login(LoginDto loginDto)
         {
-            return GetUser(login, password);
+            return GetUser(loginDto.Login, loginDto.Password);
         }
 
         public VaultUser GetUserByAuthKey(string emailKey)
@@ -201,11 +203,31 @@ namespace Vault.Services
         {
             var user = _context.Users.Include(u => u.ClientInfo).SingleOrDefault(u => u.UserName == login);
 
-            if(user != null && password == user.Password)
+            if(user != null && CheckUserPasswordValidity(user.Password, password))
             {
                 return user;
             }
             return null;
         }
+
+        private bool CheckUserPasswordValidity(string existUserPassword, string inputPassword)
+        {
+            return String.Compare(existUserPassword, inputPassword) == 0;
+            //return String.Compare(existUserPassword, CalculateMD5Hash(inputPassword)) == 0;
+        }
+
+        private string CalculateMD5Hash(string input)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString().ToLower();
+        }
+
     }
 }

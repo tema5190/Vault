@@ -1,11 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vault.Services;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using Vault.API.Infrastructure.JWT;
-using Vault.DATA.DTOs;
 using Vault.DATA.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
@@ -30,13 +26,11 @@ namespace Vault.API.Controllers
 
         [HttpPost("")]
         [AllowAnonymous]
-        public LoginResponse Login([FromBody] LoginDto loginData)
+        public LoginResponse Login([FromBody] LoginDto loginDto)
         {
             var result = new LoginResponse() { IsError = true };
-            var login = loginData.Login;
-            var password = loginData.Password;
 
-            var user = _authService.Login(login, password);
+            var user = _authService.Login(loginDto);
 
             if (user == null)
             {

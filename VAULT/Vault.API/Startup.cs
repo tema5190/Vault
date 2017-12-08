@@ -11,8 +11,6 @@ using Vault.DATA.DTOs.Email;
 using Vault.DATA.DTOs;
 using FluentScheduler;
 using Vault.Schedule;
-using System.Diagnostics;
-using System;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Vault.API
@@ -83,6 +81,15 @@ namespace Vault.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Vault API v1", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey",
+                });
+
             });
             //
         }
