@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vault.Services;
 using Vault.DATA.Models;
 using Microsoft.AspNetCore.Authorization;
+using Vault.DATA.DTOs.Transaction;
 
 namespace Vault.API.Controllers
 {
@@ -23,7 +24,7 @@ namespace Vault.API.Controllers
         }
 
         [HttpGet("bycard/{cardId}")]
-        public IList<RefillTransaction> GetAllCardTransactions(int cardId)
+        public IList<TransactionsDto> GetAllCardTransactions(int cardId)
         {
             var userName = User.Identity.Name;
             if (userName == null) return null;
@@ -31,7 +32,7 @@ namespace Vault.API.Controllers
         }
 
         [HttpGet("bygoal/{goalId}")]
-        public IList<RefillTransaction> GetAllGoalTransactions(int goalId)
+        public IList<TransactionsDto> GetAllGoalTransactions(int goalId)
         {
             var userName = User.Identity.Name;
             if (userName == null) return null;

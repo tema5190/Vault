@@ -21,16 +21,7 @@ namespace Vault.DATA
         }
 
         public void Seed()
-        {
-            // admin
-            var admin = new VaultUser()
-            {
-                UserName = "admin",
-                Password = "admin",
-                Role = UserRole.Admin,
-                IsRegistrationFinished = true,
-            };
-            
+        {          
             // 1
             var u1 = new VaultUser()
             {
@@ -45,7 +36,7 @@ namespace Vault.DATA
             {
                 CardNumber = "1111111111111111",
                 CardType = CardType.Visa,
-                CustomCardName = "ООООО, МОЯ ОБОРОНА",
+                CustomCardName = "ООООО, МОЯ ОБОРОНА1",
                 CVV = "111",
                 ExpirationDate = new DateTime(2019, 5, 20),
                 IsPaused = false,
@@ -54,20 +45,20 @@ namespace Vault.DATA
             };
             var c2 = new UserCard()
             {
-                CardNumber = "2111111111111111",
+                CardNumber = "2111111111111112",
                 CardType = CardType.MasterCard,
-                CustomCardName = "ООООО, МОЯ ОБОРОНА",
-                CVV = "111",
+                CustomCardName = "ООООО, МОЯ ОБОРОНА2",
+                CVV = "112",
                 ExpirationDate = new DateTime(2020, 5, 20),
                 IsPaused = false,
                 OwnerFullName = "Mr Artem Derid2",
             };
             var c3 = new UserCard()
             {
-                CardNumber = "91121111111111",
+                CardNumber = "91121111111113",
                 CardType = CardType.BelCard,
-                CustomCardName = "ООООО, МОЯ ОБОРОНА",
-                CVV = "111",
+                CustomCardName = "ООООО, МОЯ ОБОРОНА3",
+                CVV = "113",
                 ExpirationDate = new DateTime(2021, 10, 20),
                 IsPaused = true,
                 OwnerFullName = "Mr Artem Derid3",
@@ -102,10 +93,27 @@ namespace Vault.DATA
                 Title = "Би-би",
             };
 
-            var ci2 = new ClientInfo()
+            var ci0 = new ClientInfo()
             {
                 Email = "tema5190@gmail.com",
-                Phone = "+375445632875",
+                Phone = null,
+                Goals = new List<Goal>(),
+                Cards = new List<UserCard>(),
+            };
+
+            // admin
+            var u0 = new VaultUser()
+            {
+                UserName = "admin",
+                Password = "admin",
+                Role = UserRole.Admin,
+                IsRegistrationFinished = true,
+                ClientInfo = ci0,
+            };
+
+            var ci2 = new ClientInfo()
+            {
+                Email = "artemderid@gmail.com",
                 Goals = new List<Goal>() { g1, g2 },
                 Cards = new List<UserCard>() { c1, c2, c3 }
             };
@@ -210,72 +218,14 @@ namespace Vault.DATA
                 TransactionIsRetried = false,
             };
 
-            _db.Users.AddRange(new List<VaultUser>() { u1, u2, admin});
-            _db.ClientInfos.Add(ci2);
+            _db.Users.AddRange(new List<VaultUser>() { u1, u2, u0});
+            _db.ClientInfos.AddRange(new List<ClientInfo>() { ci2, ci0 });
             _db.UserCards.AddRange(u2.ClientInfo.Cards);
             _db.Goals.AddRange(u2.ClientInfo.Goals);
             _db.Transactions.AddRange(new List<RefillTransaction>() { t1, t2, t3, t4, t5, t6});
 
 
             this._db.SaveChanges();
-        }
-
-        private void OldDate()
-        {
-            _db.Users.AddRange(new List<VaultUser>(){
-                new VaultUser()
-                {
-                    UserName = "test",
-                    IsRegistrationFinished = false,
-                    Password = "test",
-                    Role = UserRole.Client,
-                },
-                new VaultUser()
-                {
-                    UserName = "test2",
-                    IsRegistrationFinished = true,
-                    Password = "test2",
-                    Role = UserRole.Manager,
-                 ClientInfo = new ClientInfo()
-                 {
-                     Cards = new List<UserCard>()
-                     {
-                         new UserCard()
-                         {
-                           CardType = CardType.Visa,
-                           CustomCardName = "My salary credit card",
-                           ExpirationDate = new DateTime(2019, 2, 5),
-                           CardNumber = "8800555353511111",
-                           OwnerFullName = "Mr Gleb Kulix",
-                           CVV = "228",
-                         },
-                         new UserCard()
-                         {
-                           CardType = CardType.MasterCard,
-                           CustomCardName = "My mom cards",
-                           ExpirationDate = new DateTime(2019, 2, 5),
-                           CardNumber = "8800555353511111",
-                           OwnerFullName = "Ms Gleb Kulix's Mother",
-                           CVV = "555",
-                         }
-                     },
-                     Email = "test@test",
-                     Goals = new List<Goal>()
-                     {
-                         new Goal()
-                         {
-                             Title = "На откос от армии",
-                             TargetType = TargetType.Middle,
-                             CurrentMoney = 1800,
-                             MoneyTarget = 4000,
-                             TargetStart = new DateTime(2014,9,1),
-                             TargetEnd = new DateTime(2017,12,30),
-                             Description = "Ну вы поняли",
-                         },
-                     },
-                 }
-                }
-            });
         }
     }
 }

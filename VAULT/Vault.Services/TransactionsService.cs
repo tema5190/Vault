@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vault.DATA;
+using Vault.DATA.DTOs.Transaction;
 using Vault.DATA.Models;
 
 namespace Vault.Services
@@ -20,14 +21,14 @@ namespace Vault.Services
             this._bankOperationService = bankOperationService;
         }
 
-        public IList<RefillTransaction> GetAllCardTransactions(string userName, int cardId)
+        public IList<TransactionsDto> GetAllCardTransactions(string userName, int cardId)
         {
-            return GetUserWithFullInfo(userName).ClientInfo.Transactions.Where(t => t.CardId == cardId).ToList();
+            return GetUserWithFullInfo(userName).ClientInfo.Transactions.Where(t => t.CardId == cardId).Select(t => new TransactionsDto(t)).ToList();
         }
 
-        public IList<RefillTransaction> GetAllGoalTransactions(string userName, int goalId)
+        public IList<TransactionsDto> GetAllGoalTransactions(string userName, int goalId)
         {
-            return GetUserWithFullInfo(userName).ClientInfo.Transactions.Where(t => t.GoalId == goalId).ToList();
+            return GetUserWithFullInfo(userName).ClientInfo.Transactions.Where(t => t.GoalId == goalId).Select(t => new TransactionsDto(t)).ToList();
         }
 
         public async Task<bool> TryToRetryTransaction(string userName, int transactionId)

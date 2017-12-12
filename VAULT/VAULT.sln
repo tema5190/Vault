@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vault.API", "Vault.API\Vault.API.csproj", "{EB5DB604-3DE0-4F86-B463-95B8F73A9CF6}"
 EndProject
@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vault.Services", "Vault.Ser
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vault", "Vault", "{DEE66B79-DA0B-45D3-9264-B66FB6B139E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vault.Schedule", "Vault.Schedule\Vault.Schedule.csproj", "{D0568034-FEDD-4003-A713-10865EE1EB8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vault.Schedule", "Vault.Schedule\Vault.Schedule.csproj", "{D0568034-FEDD-4003-A713-10865EE1EB8D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin", "Admin", "{C849FA81-731C-4CA8-9A15-70A27E086187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vault.Admin", "Vault.Admin\Vault.Admin.csproj", "{E326796B-50A8-4845-B762-F841BBAFDE9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,10 @@ Global
 		{D0568034-FEDD-4003-A713-10865EE1EB8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0568034-FEDD-4003-A713-10865EE1EB8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0568034-FEDD-4003-A713-10865EE1EB8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E326796B-50A8-4845-B762-F841BBAFDE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E326796B-50A8-4845-B762-F841BBAFDE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E326796B-50A8-4845-B762-F841BBAFDE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E326796B-50A8-4845-B762-F841BBAFDE9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +52,7 @@ Global
 		{5B0BDDAC-4BEB-4927-BDF4-F8D8AC747AB8} = {DEE66B79-DA0B-45D3-9264-B66FB6B139E4}
 		{DE01214C-D23C-4B08-A59A-1E3D04E8F3FD} = {DEE66B79-DA0B-45D3-9264-B66FB6B139E4}
 		{D0568034-FEDD-4003-A713-10865EE1EB8D} = {DEE66B79-DA0B-45D3-9264-B66FB6B139E4}
+		{E326796B-50A8-4845-B762-F841BBAFDE9E} = {C849FA81-731C-4CA8-9A15-70A27E086187}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {64DBD6FC-D1CD-4CF9-92E2-751B5242D4F7}
