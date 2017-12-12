@@ -12,4 +12,14 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Admin\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vault.DATA\Vault.DATA.csproj" />
+    <ProjectReference Include="..\Vault.Schedule\Vault.Schedule.csproj" />
+    <ProjectReference Include="..\Vault.Services\Vault.Services.csproj" />
+  </ItemGroup>
+
 </Project>

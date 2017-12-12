@@ -64,6 +64,13 @@ namespace Vault.API.Controllers
 
             var result = new LoginResponse();
             var user = _authService.GetUserByAuthKey(authKey);
+
+            if(user == null)
+            {
+                result.IsError = true;
+                return result;
+            }
+
             var identity = GetIdentity(user);
 
             if (identity == null) {

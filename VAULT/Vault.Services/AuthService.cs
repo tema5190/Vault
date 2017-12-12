@@ -34,7 +34,10 @@ namespace Vault.Services
 
         public VaultUser GetUserByAuthKey(string emailKey)
         {
-            var userName = _context.AuthVerificationModel.Single(r => r.TwoWayAuthKey == emailKey).UserName;
+            var user = _context.AuthVerificationModel.SingleOrDefault(r => r.TwoWayAuthKey == emailKey);
+            if (user == null) return null;
+
+            var userName = user.UserName;
             return _context.Users.Single(u => u.UserName == userName);
         }
 
