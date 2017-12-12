@@ -32,6 +32,7 @@ namespace Vault.API.Controllers
         }
 
         [HttpGet("db-redrop")]
+        [AllowAnonymous] // TODO: remove for prod (L1)
         public void DropDb()
         {
             this.db.Database.EnsureDeleted();
