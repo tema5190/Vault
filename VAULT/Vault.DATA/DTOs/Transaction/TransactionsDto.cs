@@ -1,4 +1,5 @@
-﻿using Vault.DATA.Models;
+﻿using System;
+using Vault.DATA.Models;
 
 namespace Vault.DATA.DTOs.Transaction
 {
@@ -13,6 +14,8 @@ namespace Vault.DATA.DTOs.Transaction
         public decimal Money { get; set; }
 
         public string Status { get; set; }
+
+        public DateTime TransactionDateTime { get; set; }
 
         // heh
         public int CardId { get; set; }
