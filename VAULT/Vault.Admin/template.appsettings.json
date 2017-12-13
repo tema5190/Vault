@@ -1,0 +1,11 @@
+﻿{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "VaultDataBase": "Server=TEMA5190aSUS;Database=VaultDataBase;Trusted_Connection=True;"
+  }
+}
