@@ -1,0 +1,94 @@
+﻿@using Vault.DATA.Enums;
+@using Vault.DATA;
+
+@model Vault.DATA.Models.Goal
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>Goal</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" asp-route-userId="@ViewBag.UserId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="MoneyTarget" class="control-label"></label>
+                <input asp-for="MoneyTarget" class="form-control" />
+                <span asp-validation-for="MoneyTarget" class="text-danger"></span>
+
+                <label asp-for="MoneyPerMonth" class="control-label"></label>
+                <input asp-for="MoneyPerMonth" class="form-control" />
+                <span asp-validation-for="MoneyPerMonth" class="text-danger"></span>
+
+                <label asp-for="CurrentMoney" class="control-label"></label>
+                <input asp-for="CurrentMoney" class="form-control" />
+                <span asp-validation-for="CurrentMoney" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="ChargeDay" class="control-label"></label>
+                <input asp-for="ChargeDay" type="number" max="25" min="1" class="form-control" />
+                <span asp-validation-for="ChargeDay" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetType" class="control-label"></label>
+                <select asp-for="TargetType" asp-items="@Html.GetEnumSelectList<TargetType>()" class="form-control"></select>
+                <span asp-validation-for="TargetType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetStart" class="control-label"></label>
+                <input asp-for="TargetStart" class="form-control" />
+                <span asp-validation-for="TargetStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetEnd" class="control-label"></label>
+                <input asp-for="TargetEnd" class="form-control" />
+                <span asp-validation-for="TargetEnd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreditCardId" class="control-label">Credit Card</label>
+                <select asp-for="CreditCardId" class="form-control">
+                    @if (ViewBag.CardsNotFound)
+                    {
+                <option selected disabled>У @ViewBag.UserName нет карт</option>
+                    }
+
+                    @foreach (UserCard card in ViewBag.UserCards)
+                    {
+                <option value="@card.Id">@card.CustomCardName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsPaused" /> @Html.DisplayNameFor(model => model.IsPaused)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-route-userId="@ViewBag.UserId">Back to List</a>
+</div>
+

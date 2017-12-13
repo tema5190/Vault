@@ -66,7 +66,7 @@ namespace Vault.DATA
 
             var g1 = new Goal()
             {
-                ChargeDate = new DateTime(2014, 09, 1),
+                ChargeDay = new DateTime(2014, 09, 1).Day,
                 CurrentMoney = 1000,
                 Description = "На взятку военкому",
                 IsPaused = false,
@@ -81,7 +81,7 @@ namespace Vault.DATA
 
             var g2 = new Goal()
             {
-                ChargeDate = new DateTime(2017,12,08),
+                ChargeDay = new DateTime(2017,12,08).Day,
                 CurrentMoney = 0,
                 Description = "На машину",
                 IsPaused = true,

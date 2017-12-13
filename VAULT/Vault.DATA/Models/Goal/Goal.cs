@@ -19,10 +19,16 @@ namespace Vault.DATA.Models
 
         public bool IsPaused { get; set; }
 
-        public DateTime ChargeDate { get; set; } // day of month
+        [DataType(DataType.Date)]
+        [Range(1,25)]
+        public int ChargeDay { get; set; } // day of month
 
         public TargetType TargetType { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime TargetStart { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime TargetEnd { get; set; }
 
         public int? CreditCardId { get; set; }

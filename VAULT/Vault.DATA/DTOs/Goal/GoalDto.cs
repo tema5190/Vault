@@ -15,7 +15,7 @@ namespace Vault.DATA.DTOs.Goal
         public TargetType TargetType { get; set; }
         public DateTime TargetEnd { get; set; }
 
-        public DateTime ChargeDate { get; set; }
+        public int ChargeDate { get; set; }
 
         public bool IsPaused { get; set; }
         public int? CreditCardId { get; set; }

@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Admin\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Vault.DATA\Vault.DATA.csproj" />
     <ProjectReference Include="..\Vault.Schedule\Vault.Schedule.csproj" />
     <ProjectReference Include="..\Vault.Services\Vault.Services.csproj" />

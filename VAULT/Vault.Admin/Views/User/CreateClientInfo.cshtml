@@ -1,0 +1,44 @@
+﻿@using Vault.DATA.Enums;
+
+@model Vault.DATA.Models.ClientInfo
+
+@{
+    ViewData["Title"] = "Create or update client info";
+}
+
+<h2>AddStepTwo</h2>
+
+<h4>ClientInfo for @ViewBag.UserName</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateClientInfo">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input hidden asp-for="UserId" value="@ViewBag.UserId" />
+            @if (ViewBag.AuthType == AuthModelType.Email)
+            {
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+            }
+            else
+            {
+        <div class="form-group">
+            <label asp-for="Phone" class="control-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

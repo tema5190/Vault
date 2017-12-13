@@ -14,7 +14,7 @@ namespace Vault.DATA.Models
         public bool IsRegistrationFinished { get; set; }
 
         public UserRole Role { get; set; }
-        public AuthModelType AuthModelType { get; set; }
+        public AuthModelType? AuthModelType { get; set; }
 
         public ClientInfo ClientInfo { get; set; }
     }

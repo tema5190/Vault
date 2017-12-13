@@ -13,17 +13,22 @@ namespace Vault.DATA
 
         public string CustomCardName { get; set; }
 
+        [Required]
         public string OwnerFullName { get; set; }
 
+        [DataType(DataType.CreditCard)]
         public string CardNumber { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime ExpirationDate { get; set; }
 
         public CardType CardType { get; set; }
 
+        [StringLength(3)]
         public string CVV { get; set; }
 
         public bool IsPaused { get; set; }
+
         //
         public VaultUser Owner { get; set; }
         public IList<RefillTransaction> Transactions { get; set; }

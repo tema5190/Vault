@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Vault.DATA;
 using Vault.DATA.DTOs.Cards;
@@ -13,15 +11,17 @@ namespace Vault.Services
     public class UserCardService
     {
         private readonly UserService _userService;
+        private readonly BankOperationService _bankOperationService;
         private readonly VaultContext _db;
 
-        public UserCardService(UserService userService, VaultContext vaultContext)
+        public UserCardService(UserService userService, VaultContext vaultContext, BankOperationService operationService)
         {
             this._userService = userService;
             this._db = vaultContext;
+            this._bankOperationService = operationService;
         }
 
-        public async Task<IList<UserCardDto>> GetUserCards(string userName)
+        public async Task<IList<UserCardDto>> GetUserCardsByUserName(string userName)
         {
             var user = await _db.Users
                 .Include(u => u.ClientInfo.Cards)
@@ -31,17 +31,32 @@ namespace Vault.Services
             return user.ClientInfo.Cards.Select(c => new UserCardDto(c)).ToList();
         }
 
-        public async Task<UserCardDto> GetCreditCardById(string userName, int id)
+        public async Task<IList<UserCard>> GetUserCardsByUserId(int id)
+        {
+            var user = await _db.Users
+                .Include(u => u.ClientInfo.Cards)
+                .AsNoTracking()
+                .SingleAsync(u => u.Id == id);
+
+            return user.ClientInfo.Cards;
+        }
+
+        public async Task<UserCardDto> GetCreditCardDtoById(string userName, int cardId)
+        {
+            return new UserCardDto(await GetCreditCardById(userName, cardId));
+        }
+
+        public async Task<UserCard> GetCreditCardById(string userName, int cardId)
         {
             var user = await _db.Users.Include(u => u.ClientInfo.Cards).FirstOrDefaultAsync(u => u.UserName == userName);
 
             if (user == null) return null;
 
-            var card = user.ClientInfo.Cards.FirstOrDefault(c => c.Id == id);
+            var card = user.ClientInfo.Cards.FirstOrDefault(c => c.Id == cardId);
 
             if (card == null) return null;
 
-            return new UserCardDto(card);
+            return card;
         }
 
         public async Task<bool> AddUserCard(string userName, UserCardDto newCardDto)
@@ -61,6 +76,10 @@ namespace Vault.Services
             };
 
             user.ClientInfo.Cards.Add(newCard);
+
+            // TODO: I AM HERE
+            _bankOperationService.AddBankCard(newCard);
+
             await _db.SaveChangesAsync();
 
             return true;
@@ -78,12 +97,25 @@ namespace Vault.Services
             {
                 return false;
             }
-            card.Goals.All(g => DeleteCardAndPauseGoal(g));
+
+            if (card.Goals != null && card.Goals.Count != 0)
+                card.Goals.All(g => DeleteCardAndPauseGoal(g));
+
             user.ClientInfo.Cards.Remove(card);
 
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> SwitchCardPause(string userName, int cardId)
+        {
+            var card = await GetCreditCardById(userName, cardId);
+            card.IsPaused = card.IsPaused == true ? false : true;
+            var switchCompletedGoalCompleted = SwitchAllCardGoals(card);
+            await _db.SaveChangesAsync();
+
+            return true && switchCompletedGoalCompleted;
         }
 
         private bool DeleteCardAndPauseGoal(Goal goal)
@@ -92,6 +124,17 @@ namespace Vault.Services
             goal.CreditCard = null;
             goal.CreditCardId = null;
 
+            return true;
+        }
+
+        private bool SwitchAllCardGoals(UserCard card)
+        {
+            if (card == null) return false;
+
+            if (card.Goals != null && card.Goals.Count != 0)
+            {         
+                card.Goals.All(g => { g.IsPaused = g.IsPaused ? false : true; return true; });
+            }
             return true;
         }
 

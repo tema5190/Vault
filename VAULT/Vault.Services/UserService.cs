@@ -33,5 +33,25 @@ namespace Vault.Services
 
             return null;
         }
+
+        public async Task<VaultUser> GetUserById(int id)
+        {
+            var existUser = await this._context.Users
+                .Include(u => u.ClientInfo.Cards)
+                .Include(u => u.ClientInfo.Goals)
+                .Include(u => u.ClientInfo.Transactions)
+                .SingleOrDefaultAsync(u => u.Id == id);
+            return existUser;
+        }
+
+        public async Task<bool> DeleteUserById(int id)
+        {
+
+            var userForDelete = await GetUserById(id);
+            _context.Users.Remove(userForDelete);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

@@ -1,0 +1,46 @@
+﻿@using Vault.DATA.Models;
+
+@model List<VaultUser>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<a asp-controller="User" asp-action="CreateUser">Add new user</a>
+
+
+<ul>
+    @foreach(var user in Model)
+    {
+
+        <li>
+            <div>
+                <h2 style="color:@(user.IsRegistrationFinished ? "green" : "red")">@user.UserName</h2>
+                <div>
+                    <p>Role = @user.Role</p>
+                    
+                </div>
+
+                <div>
+                    @if (user.IsRegistrationFinished)
+                    {
+                        <p>AuthModelType = @user.AuthModelType</p>
+                        <p>
+                            <a asp-controller="Cart" asp-action="Index" asp-route-id="@user.Id">User cards</a>
+                        </p>
+                        <p>
+                            <a asp-controller="Goal" asp-action="Index" asp-route-userId="@user.Id">User goals</a>
+                        </p>
+                    }
+
+                    <p>
+                        <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id">Edit user</a>
+                    </p>
+                    <div>
+                        <a asp-controller="User" asp-action="Delete" asp-route-id="@user.Id">Delete User</a>
+                    </div>
+                </div>
+                </div></li>
+    }
+</ul>

@@ -25,14 +25,14 @@ namespace Vault.API.Controllers
             var userName = User.Identity.Name;
             if (userName == null)
                 return null;
-            return await _creditCardService.GetUserCards(userName);
+            return await _creditCardService.GetUserCardsByUserName(userName);
         }
 
         [HttpGet("{id}")]
         public async Task<UserCardDto> GetCreditCardById(int id)
         {
             var userName = User.Identity.Name;
-            return await _creditCardService.GetCreditCardById(userName, id);
+            return await _creditCardService.GetCreditCardDtoById(userName, id);
         }
 
         [HttpPost("add")]

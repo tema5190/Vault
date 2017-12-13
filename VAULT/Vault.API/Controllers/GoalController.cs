@@ -45,5 +45,12 @@ namespace Vault.API.Controllers
             if (userName == null) return false;
             return _goalService.UpdateGoal(userName, goalDto);
         }
+
+        [HttpPost("delete")]
+        public async Task<bool> DeleteGoal([FromBody] DeleteGoalDto deleteGoalDto)
+        {
+            var userName = User.Identity.Name;
+            return await _goalService.DeleteGoal(userName, deleteGoalDto.GoalId, deleteGoalDto.CardId);
+        }
     }
 }

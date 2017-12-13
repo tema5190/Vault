@@ -22,6 +22,34 @@ namespace Vault.Services
             this.newTransactions = new List<RefillTransaction>();
         }
 
+        public bool AddBankCard(UserCard userCard)
+        {
+            var bankCard = new BankCard(userCard);
+            return AddBankCard(bankCard);
+        }
+
+        public bool AddBankCard(BankCard bankCard)
+        {
+            _db.BankCards.Add(bankCard);
+            _db.SaveChanges();
+
+            return true;
+        }
+
+        public bool UpdateBankCard(BankCard bankCard)
+        {
+            var exist = _db.BankCards.SingleOrDefault(c => c.CardNumber == bankCard.CardNumber);
+
+            if (exist == null) return false;
+
+            exist.Balance = bankCard.Balance;
+            exist.IsBlocked = bankCard.IsBlocked;
+
+            _db.SaveChanges();
+
+            return true;
+        }
+
         #region Debit
 
         // Call every day at 23:00
@@ -56,7 +84,7 @@ namespace Vault.Services
             if (transaction == null || transaction.TransactionIsRetried) return false;
 
             var goal = transaction.Goal;
-            var bankCard = await GetBankCardToGetTransaction(transaction.CreditCard);
+            var bankCard = await GetBankCard(transaction.CreditCard);
 
             var isCompleted = TryToPerformTransactionAndAddInSaveList(goal, bankCard);
 
@@ -90,7 +118,7 @@ namespace Vault.Services
 
         public async Task<bool> TryToPerformTransaction(Goal target)
         {
-            var bankCard = await GetBankCardToGetTransaction(target.CreditCard);
+            var bankCard = await GetBankCard(target.CreditCard);
             return TryToPerformTransactionAndAddInSaveList(target, bankCard);
         }
 
@@ -138,7 +166,7 @@ namespace Vault.Services
             return await _db.BankCards.Where(bc => userCards.Any(uc => uc.CardNumber == bc.CardNumber)).ToListAsync();
         }
 
-        private async Task<BankCard> GetBankCardToGetTransaction(UserCard userCard)
+        public async Task<BankCard> GetBankCard(UserCard userCard)
         {
             return await _db.BankCards.SingleOrDefaultAsync(bc => bc.CardNumber == userCard.CardNumber);
         }
@@ -151,7 +179,7 @@ namespace Vault.Services
             //    DateTime.DaysInMonth(goal.TargetStart.Year, goal.TargetStart.Month) >
             //    DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);  // TODO: trying to solve this in future (maybe)
 
-            return goal.ChargeDate.Day == todayDay;
+            return goal.ChargeDay == todayDay;
         }
 
         #endregion

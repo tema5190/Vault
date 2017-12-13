@@ -31,27 +31,13 @@ namespace Vault.API.Controllers
             return Request.HttpContext.Connection.RemoteIpAddress.ToString();
         }
 
-        [HttpGet("db-redrop")]
-        [AllowAnonymous] // TODO: remove for prod (L1)
-        public void DropDb()
-        {
-            this.db.Database.EnsureDeleted();
-            this.db.Database.EnsureCreated();
-            this.initializer.Seed();
-        }
-
-        [HttpGet("sms/{to}")]
-        public void SendSms(string to)
-        {
-            this.smsService.SendLoginVerification(to, GetRandomEmailKey(6));
-        }
-
-        private static string GetRandomEmailKey(int length)
-        {
-            var random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
+        //[HttpGet("db-redrop")]
+        //[AllowAnonymous] // TODO: remove for prod (L1)
+        //public void DropDb()
+        //{
+        //    this.db.Database.EnsureDeleted();
+        //    this.db.Database.EnsureCreated();
+        //    this.initializer.Seed();
+        //}
     }
 }

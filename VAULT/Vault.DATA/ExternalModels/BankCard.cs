@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Vault.DATA;
 using Vault.DATA.Enums;
 
 namespace BankModel
@@ -22,5 +23,21 @@ namespace BankModel
         public decimal Balance { get; set; }
 
         public bool IsBlocked { get; set; }
+
+        public BankCard()
+        {
+
+        }
+
+        public BankCard(UserCard userCard, decimal balance = 0, bool isBlocked = false)
+        {
+            OwnerFullName = userCard.OwnerFullName;
+            CardNumber = userCard.CardNumber;
+            ExpirationDate = userCard.ExpirationDate;
+            CardNumber = userCard.CardNumber;
+            CVV = userCard.CVV;
+            Balance = balance;
+            IsBlocked = isBlocked;
+        }
     }
 }

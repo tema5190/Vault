@@ -12,6 +12,9 @@ using Vault.DATA.DTOs;
 using FluentScheduler;
 using Vault.Schedule;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Vault.API
 {
@@ -27,8 +30,7 @@ namespace Vault.API
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("VaultDataBase");
-            services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection));
-
+            services.AddDbContext<VaultContext>(option => option.UseSqlServer(connection, x=> x.MigrationsHistoryTable("Migrations")));
             services.AddOptions();
 
             services.Configure<EmailSMTPConfiguration>(Configuration.GetSection("EmailSMTPConfiguration"));
@@ -75,6 +77,8 @@ namespace Vault.API
             JobManager.Start();
             //
 
+            services.AddCors();
+
             services.AddMvc(); // <---
 
             // Swagger section
@@ -113,6 +117,14 @@ namespace Vault.API
             }
 
             app.UseStaticFiles();
+
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(Directory.GetCurrentDirectory(), @".well-known")),
+            //    RequestPath = new PathString("/.well-known")
+            //});
+
             app.UseMvc();
         }
     }

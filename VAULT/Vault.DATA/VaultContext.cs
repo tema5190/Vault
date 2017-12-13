@@ -20,5 +20,15 @@ namespace Vault.DATA
 
         // ONLY FOR ADMIN OR SERVICES => DO NOT USE THIS MODELS
         public DbSet<BankCard> BankCards { get; set; }
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<VaultUser>()
+                .HasOne(u => u.ClientInfo)
+                .WithOne(info => info.User)
+                .HasForeignKey<ClientInfo>(clientInfo => clientInfo.UserId);
+        }
     }
 }

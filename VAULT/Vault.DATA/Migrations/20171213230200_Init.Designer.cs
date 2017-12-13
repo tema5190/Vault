@@ -12,8 +12,8 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171208063224_ReInit")]
-    partial class ReInit
+    [Migration("20171213230200_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,7 +55,12 @@ namespace Vault.DATA.Migrations
 
                     b.Property<string>("Phone");
 
+                    b.Property<int>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("ClientInfos");
                 });
@@ -65,7 +70,7 @@ namespace Vault.DATA.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("ChargeDate");
+                    b.Property<int>("ChargeDay");
 
                     b.Property<int?>("ClientInfoId");
 
@@ -163,9 +168,7 @@ namespace Vault.DATA.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AuthModelType");
-
-                    b.Property<int?>("ClientInfoId");
+                    b.Property<int?>("AuthModelType");
 
                     b.Property<bool>("IsRegistrationFinished");
 
@@ -177,8 +180,6 @@ namespace Vault.DATA.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientInfoId");
-
                     b.ToTable("Users");
                 });
 
@@ -187,7 +188,8 @@ namespace Vault.DATA.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CVV");
+                    b.Property<string>("CVV")
+                        .HasMaxLength(3);
 
                     b.Property<string>("CardNumber");
 
@@ -201,7 +203,8 @@ namespace Vault.DATA.Migrations
 
                     b.Property<bool>("IsPaused");
 
-                    b.Property<string>("OwnerFullName");
+                    b.Property<string>("OwnerFullName")
+                        .IsRequired();
 
                     b.Property<int?>("OwnerId");
 
@@ -212,6 +215,14 @@ namespace Vault.DATA.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("UserCards");
+                });
+
+            modelBuilder.Entity("Vault.DATA.Models.ClientInfo", b =>
+                {
+                    b.HasOne("Vault.DATA.Models.VaultUser", "User")
+                        .WithOne("ClientInfo")
+                        .HasForeignKey("Vault.DATA.Models.ClientInfo", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Vault.DATA.Models.Goal", b =>
@@ -239,13 +250,6 @@ namespace Vault.DATA.Migrations
                         .WithMany()
                         .HasForeignKey("GoalId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Vault.DATA.Models.VaultUser", b =>
-                {
-                    b.HasOne("Vault.DATA.Models.ClientInfo", "ClientInfo")
-                        .WithMany()
-                        .HasForeignKey("ClientInfoId");
                 });
 
             modelBuilder.Entity("Vault.DATA.UserCard", b =>

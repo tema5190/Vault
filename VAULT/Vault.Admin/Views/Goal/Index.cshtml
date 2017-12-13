@@ -1,0 +1,93 @@
+﻿@using Vault.DATA;
+
+@model IEnumerable<Vault.DATA.Models.Goal>
+
+<h2>Goals list for @ViewBag.UserName</h2>
+
+<p>
+    <a asp-action="Create" asp-route-userId="@ViewBag.UserId">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MoneyTarget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MoneyPerMonth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrentMoney)
+            </th>
+            <th>
+                Charge day
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TargetType)
+            </th>
+            <th>
+                Start
+            </th>
+            <th>
+                End
+            </th>
+            <th>
+                Card Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPaused)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoneyTarget)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoneyPerMonth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentMoney)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChargeDay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TargetType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TargetStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TargetEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreditCard.CustomCardName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPaused)
+            </td>
+            <td>
+                @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>*@ 
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

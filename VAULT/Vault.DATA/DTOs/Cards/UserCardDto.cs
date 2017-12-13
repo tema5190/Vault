@@ -21,13 +21,15 @@ namespace Vault.DATA.DTOs.Cards
 
         }
 
-        public UserCardDto(UserCard card)
+        public UserCardDto(UserCard card, bool isInput = false)
         {
             CreditCardId = card.Id;
             CustomCardName = card.CustomCardName;
-            CardNumber = SecureCardInfo(card.CardNumber);
+            CardNumber = !isInput ? SecureCardInfo(card.CardNumber) : card.CardNumber;
             OwnerFullName = card.OwnerFullName;
             CardType = card.CardType;
+            ExpirationDate = card.ExpirationDate;
+            CVV = card.CVV;
         }
 
         private string SecureCardInfo(string cardNumber)
