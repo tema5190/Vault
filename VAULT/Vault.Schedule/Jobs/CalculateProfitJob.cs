@@ -16,8 +16,8 @@ namespace Vault.Schedule
 
         public void Execute()
         {
-            Debug.WriteLine(DateTime.Now.ToLongTimeString() + "profit");
-            //_service.CalculateGoalsSumWithProfit();
+            //Debug.WriteLine(DateTime.Now.ToLongTimeString() + "profit");
+            _service.CalculateGoalsSumWithProfit();
         }
     }
 }

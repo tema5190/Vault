@@ -12,16 +12,11 @@ namespace Vault.API.Controllers
     [Authorize(Roles = "Admin")]
     public class ServiceController : Controller
     {
-        private readonly VaultContext db;
-        private readonly VaultContextInitializer initializer;
+        private readonly BankOperationService bankOperationService;
 
-        private readonly SmsService smsService;
-
-        public ServiceController(VaultContext db, SmsService smsService)
+        public ServiceController(BankOperationService service)
         {
-            this.db = db;
-            this.initializer = new VaultContextInitializer(this.db);
-            this.smsService = smsService;
+            bankOperationService = service;
         }
 
         [HttpGet("ping")]
@@ -29,6 +24,38 @@ namespace Vault.API.Controllers
         public string Ping()
         {
             return Request.HttpContext.Connection.RemoteIpAddress.ToString();
+        }
+
+        [HttpGet("PERFORM")]
+        [AllowAnonymous]
+        public bool Perform()
+        {
+            try
+            {
+                bankOperationService.PerformAllTransactionsInQueue();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [HttpGet("PROFIT")]
+        [AllowAnonymous]
+        public bool Profit()
+        {
+            try
+            {
+               bankOperationService.CalculateGoalsSumWithProfit();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         //[HttpGet("db-redrop")]

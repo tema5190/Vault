@@ -16,8 +16,8 @@ namespace Vault.Schedule
 
         public void Execute()
         {
-            Debug.WriteLine(DateTime.Now.ToLongTimeString() + "trans");
-            //_service.PerformAllDayTransactions();
+            //Debug.WriteLine(DateTime.Now.ToLongTimeString() + "trans");
+            _service.PerformAllTransactionsInQueue();
         }
     }
 }

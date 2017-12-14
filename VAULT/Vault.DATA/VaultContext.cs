@@ -29,6 +29,11 @@ namespace Vault.DATA
                 .HasOne(u => u.ClientInfo)
                 .WithOne(info => info.User)
                 .HasForeignKey<ClientInfo>(clientInfo => clientInfo.UserId);
+
+            modelBuilder.Entity<UserCard>()
+                .HasMany<Goal>(u => u.Goals)
+                .WithOne(g => g.CreditCard)
+                .HasForeignKey(g => g.CreditCardId);
         }
     }
 }

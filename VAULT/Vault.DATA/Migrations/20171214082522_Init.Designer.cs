@@ -12,7 +12,7 @@ using Vault.DATA.Enums;
 namespace Vault.DATA.Migrations
 {
     [DbContext(typeof(VaultContext))]
-    [Migration("20171213230200_Init")]
+    [Migration("20171214082522_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

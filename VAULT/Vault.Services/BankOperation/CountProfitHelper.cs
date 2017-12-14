@@ -9,8 +9,11 @@ namespace Vault.Services.BankOperation
         public static decimal CalculateProfitPerMonth(Goal goal, TargetType? targetType = null)
         {
             var target = targetType ?? goal.TargetType;
-            var money = goal.CurrentMoney != 0 ? goal.CurrentMoney : goal.MoneyPerMonth;
-            return money * ((decimal)target / 10);
+            var money = goal.CurrentMoney;
+            var profitPercent = ((decimal)target / 10) / 100;
+            var finalProfit = money * profitPercent;
+
+            return finalProfit;
         }
 
         public static decimal CalculateProfitAllTime(Goal goal, TargetType? targetType = null)

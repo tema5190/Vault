@@ -3,8 +3,8 @@
     public enum TargetType
     {
         // x / 10 = percent
-        Short = 34,
-        Middle = 52,
-        Long = 70,
+        Short = 7,
+        Middle = 11,
+        Long = 14,
     }
 }

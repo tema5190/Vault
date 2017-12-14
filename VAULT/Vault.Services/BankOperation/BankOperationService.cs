@@ -53,20 +53,19 @@ namespace Vault.Services
         #region Debit
 
         // Call every day at 23:00
-        public async Task PerformAllTransactionsInQueue()
+        public void PerformAllTransactionsInQueue()
         {
-            newTransactions = new List<RefillTransaction>();
+            //newTransactions = new List<RefillTransaction>();
 
-            var goalsToPerform = await this._db.Goals
+            var goalsToPerform = this._db.Goals
                 .Include(g => g.CreditCard)
-                .AsNoTracking()
-                .Where(g => IsGoalsCanPerformedToday(g)).ToListAsync();
+                .Where(g => IsGoalsCanPerformedToday(g)).ToList();
 
-            if (goalsToPerform.Capacity == 0) return;
+            if (goalsToPerform.Count == 0) return;
 
-            var bankCards = await GetBankCardToGetTransactions(goalsToPerform.Select(g => g.CreditCard).ToList());
+            var bankCards = GetBankCardToGetTransactions(goalsToPerform.Select(g => g.CreditCard).ToList());
 
-            for (var i = 0; i < goalsToPerform.Capacity; i++)
+            for (var i = 0; i < goalsToPerform.Count; i++)
             {
                 var goal = goalsToPerform[i];
                 var bankCard = bankCards.Find(bc => bc.CardNumber == goal.CreditCard.CardNumber);
@@ -74,7 +73,11 @@ namespace Vault.Services
                 TryToPerformTransactionAndAddInSaveList(goal, bankCard);
             }
 
-            await this._db.Transactions.AddRangeAsync(this.newTransactions);
+            this._db.Transactions.AddRange(this.newTransactions);
+
+            _db.SaveChanges();
+
+            newTransactions = new List<RefillTransaction>();
         }
 
         public async Task<bool> RetryTransaction(int transactionId)
@@ -112,6 +115,7 @@ namespace Vault.Services
                 return false;
             }
 
+            target.CurrentMoney += money.Value;
             AddTransaction(target, money.Value);
             return true;
         }
@@ -157,13 +161,13 @@ namespace Vault.Services
         {
             if (bankCard.Balance < money) return null;
 
-            bankCard.Balance -= money;
+            bankCard.Balance = bankCard.Balance - money;
             return money;
         }
 
-        private async Task<List<BankCard>> GetBankCardToGetTransactions(List<UserCard> userCards)
+        private List<BankCard> GetBankCardToGetTransactions(List<UserCard> userCards)
         {
-            return await _db.BankCards.Where(bc => userCards.Any(uc => uc.CardNumber == bc.CardNumber)).ToListAsync();
+            return _db.BankCards.Where(bc => userCards.Any(uc => uc.CardNumber == bc.CardNumber)).ToList();
         }
 
         public async Task<BankCard> GetBankCard(UserCard userCard)
@@ -179,6 +183,8 @@ namespace Vault.Services
             //    DateTime.DaysInMonth(goal.TargetStart.Year, goal.TargetStart.Month) >
             //    DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);  // TODO: trying to solve this in future (maybe)
 
+            //return true;
+
             return goal.ChargeDay == todayDay;
         }
 
@@ -187,13 +193,18 @@ namespace Vault.Services
         #region Calculate Profit
 
         // Call every month on first day of month
-        public async Task CalculateGoalsSumWithProfit()
+        public bool CalculateGoalsSumWithProfit()
         {
-            await _db.Goals.Where(g => !g.IsPaused).ForEachAsync(g =>
+            var goals = _db.Goals.Where(g => !g.IsPaused).ToList();
+
+            goals.ForEach(g =>
             {
                 g.CurrentMoney += CountProfitHelper.CalculateProfitPerMonth(g);
             });
-            await _db.SaveChangesAsync();
+
+            _db.SaveChanges();
+
+            return true;
         }
 
         #endregion

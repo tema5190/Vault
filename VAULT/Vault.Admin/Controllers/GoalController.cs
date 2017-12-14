@@ -81,5 +81,19 @@ namespace Vault.Admin.Controllers
 
             return RedirectToAction("Index", new { userId = user.Id});
         }
+
+        public async Task<IActionResult> Delete(int userId, int goalId)
+        {
+            var user = await _userService.GetUserById(userId);
+
+            if (user == null) return StatusCode(400);
+
+            ViewBag.UserName = user.UserName;
+            ViewBag.UserId = user.Id;
+
+            await _goalService.DeleteGoal(user.UserName, goalId, user.ClientInfo.Cards.First().Id);
+
+            return RedirectToAction("Index", new { userId = user.Id });
+        }
     }
 }
