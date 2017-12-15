@@ -42,8 +42,8 @@ namespace Vault.API.Controllers
             return await _creditCardService.AddUserCard(userName, newCard);
         }
 
-        [HttpDelete("delete/{cardId}")]
-        public async Task<bool> DeleteUserCard(int cardId)
+        [HttpPost("delete")]
+        public async Task<bool> DeleteUserCard([FromBody] int cardId)
         {
             var userName = User.Identity.Name;
             return await _creditCardService.DeleteUserCard(userName, cardId);

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vault.DATA;
+using Vault.DATA.Enums;
 using Vault.DATA.Models;
 using Vault.Services.BankOperation;
 
@@ -92,7 +93,7 @@ namespace Vault.Services
             var isCompleted = TryToPerformTransactionAndAddInSaveList(goal, bankCard);
 
             if (!isCompleted) return false;
-            
+
             transaction.IsPausedOrError = false;
             transaction.TransactionIsRetried = true; // for view old transaction in list
             await _db.Transactions.AddRangeAsync(this.newTransactions);
@@ -153,7 +154,8 @@ namespace Vault.Services
             });
         }
 
-        private bool CheckIsCardBlocked(BankCard bankCard){
+        private bool CheckIsCardBlocked(BankCard bankCard)
+        {
             return bankCard.IsBlocked;
         }
 
@@ -207,6 +209,32 @@ namespace Vault.Services
             return true;
         }
 
+        public Tuple<decimal, int> CalculateProfitSpeed(int month, decimal permonth, TargetType type, decimal target = 0)
+        {
+            decimal sum = 0;
+            int counter = 0;
+            while (sum < target)
+            {
+                counter++;
+                sum += permonth;
+                sum += CountProfitHelper.CalculateProfitPerMonth(sum, type);
+            }
+
+            return new Tuple<decimal, int>(sum, counter);
+        }
+
+        public decimal CalculateProfit(decimal permonth, TargetType type, int month)
+        {
+            decimal sum = 0;
+            for(var i = 0; i < month; i++)
+            {
+                sum += permonth;
+                var profit = CountProfitHelper.CalculateProfitPerMonth(sum, type);
+                sum += profit;
+            }
+
+            return sum;
+        }
         #endregion
     }
 }
