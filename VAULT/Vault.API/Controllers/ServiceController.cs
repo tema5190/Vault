@@ -29,11 +29,11 @@ namespace Vault.API.Controllers
 
         [HttpGet("PERFORM")]
         [AllowAnonymous]
-        public bool Perform()
+        public bool Perform(bool isAll = false)
         {
             try
             {
-                bankOperationService.PerformAllTransactionsInQueue();
+                bankOperationService.PerformAllTransactionsInQueue(isAll);
             }
             catch
             {

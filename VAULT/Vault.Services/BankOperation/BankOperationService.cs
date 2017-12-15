@@ -54,13 +54,20 @@ namespace Vault.Services
         #region Debit
 
         // Call every day at 23:00
-        public void PerformAllTransactionsInQueue()
+        public void PerformAllTransactionsInQueue(bool performALL = false)
         {
             //newTransactions = new List<RefillTransaction>();
 
-            var goalsToPerform = this._db.Goals
-                .Include(g => g.CreditCard)
-                .Where(g => IsGoalsCanPerformedToday(g)).ToList();
+            List<Goal> goalsToPerform;
+
+            if (!performALL)
+                goalsToPerform = this._db.Goals
+                   .Include(g => g.CreditCard)
+                   .Where(g => IsGoalsCanPerformedToday(g)).ToList();
+            else
+            {
+                goalsToPerform = this._db.Goals.Include(g => g.CreditCard).ToList();
+            }
 
             if (goalsToPerform.Count == 0) return;
 
