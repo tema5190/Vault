@@ -12,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="BankCardPost" asp-route-id="@ViewBag.UserId">
+        <form asp-action="BankCardPost">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -60,6 +60,6 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-route-id="@ViewBag.UserId" asp-action="Index">Back to List</a>
 </div>
 
